@@ -1,0 +1,80 @@
+2026-08-23 18:55:27 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\train.log
+2026-08-23 18:55:27 | INFO    | cicps.train | Configuration: D:\Projects\cicps-augmentation\config\experiment_0a.yaml
+2026-08-23 18:55:27 | INFO    | cicps.seeding | Seeded RNGs with master seed 42 (cudnn.deterministic=True, cudnn.benchmark=False, deterministic_algorithms=False)
+2026-08-23 18:55:27 | INFO    | cicps.device | Device: cuda (NVIDIA GeForce RTX 3050 Laptop GPU, 4.0 GB)
+2026-08-23 18:55:27 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-08-23 18:55:27 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-08-23 18:55:27 | INFO    | cicps.train | Internal split: 5394 train / 600 val images from the official train portion (official test set locked, 5794 images untouched).
+2026-08-23 18:55:28 | INFO    | cicps.factory | Built resnet18 (pretrained=True, weights=IMAGENET1K_V1, feature_dim=512, num_classes=200, params=11.28M).
+2026-08-23 18:55:28 | INFO    | cicps.trainer | Train loader: 5394 images, batch_size=32, workers=4.
+2026-08-23 18:55:28 | INFO    | cicps.trainer | Val loader: 600 images, batch_size=64, workers=4.
+2026-08-23 18:55:28 | INFO    | cicps.trainer | Training baseline for 20 epoch(s) on cuda.
+2026-08-23 19:01:12 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\train.log
+2026-08-23 19:01:12 | INFO    | cicps.train | Configuration: D:\Projects\cicps-augmentation\config\experiment_0a.yaml
+2026-08-23 19:01:12 | INFO    | cicps.seeding | Seeded RNGs with master seed 42 (cudnn.deterministic=True, cudnn.benchmark=False, deterministic_algorithms=False)
+2026-08-23 19:01:12 | INFO    | cicps.device | Device: cuda (NVIDIA GeForce RTX 3050 Laptop GPU, 4.0 GB)
+2026-08-23 19:01:12 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-08-23 19:01:12 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-08-23 19:01:12 | INFO    | cicps.train | Internal split: 5394 train / 600 val images from the official train portion (official test set locked, 5794 images untouched).
+2026-08-23 19:01:12 | INFO    | cicps.factory | Built resnet18 (pretrained=True, weights=IMAGENET1K_V1, feature_dim=512, num_classes=200, params=11.28M).
+2026-08-23 19:01:12 | INFO    | cicps.trainer | Train loader: 5394 images, batch_size=32, workers=4.
+2026-08-23 19:01:12 | INFO    | cicps.trainer | Val loader: 600 images, batch_size=64, workers=4.
+2026-08-23 19:01:12 | INFO    | cicps.trainer | Training baseline for 20 epoch(s) on cuda.
+2026-08-23 19:02:16 | INFO    | cicps.trainer | epoch  1/20 | lr 3.00e-04 | train loss 3.7812 top1 0.2277 | val loss 2.4650 top1 0.4483 top5 0.7533 | 63.9s
+2026-08-23 19:02:17 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 0, train_loss=3.7812, train_top1=0.2277, val_loss=2.4650, val_top1=0.4483, val_top5=0.7533).
+2026-08-23 19:02:18 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 0, train_loss=3.7812, train_top1=0.2277, val_loss=2.4650, val_top1=0.4483, val_top5=0.7533).
+2026-08-23 19:02:33 | INFO    | cicps.trainer | epoch  2/20 | lr 3.00e-04 | train loss 1.8750 top1 0.5903 | val loss 1.9250 top1 0.5233 top5 0.8300 | 15.0s
+2026-08-23 19:02:33 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 1, train_loss=1.8750, train_top1=0.5903, val_loss=1.9250, val_top1=0.5233, val_top5=0.8300).
+2026-08-23 19:02:33 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 1, train_loss=1.8750, train_top1=0.5903, val_loss=1.9250, val_top1=0.5233, val_top5=0.8300).
+2026-08-23 19:02:49 | INFO    | cicps.trainer | epoch  3/20 | lr 2.98e-04 | train loss 1.1541 top1 0.7430 | val loss 1.5696 top1 0.6000 top5 0.8800 | 15.3s
+2026-08-23 19:02:49 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 2, train_loss=1.1541, train_top1=0.7430, val_loss=1.5696, val_top1=0.6000, val_top5=0.8800).
+2026-08-23 19:02:49 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 2, train_loss=1.1541, train_top1=0.7430, val_loss=1.5696, val_top1=0.6000, val_top5=0.8800).
+2026-08-23 19:03:05 | INFO    | cicps.trainer | epoch  4/20 | lr 2.92e-04 | train loss 0.7501 top1 0.8376 | val loss 1.4882 top1 0.6200 top5 0.8783 | 15.9s
+2026-08-23 19:03:06 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 3, train_loss=0.7501, train_top1=0.8376, val_loss=1.4882, val_top1=0.6200, val_top5=0.8783).
+2026-08-23 19:03:06 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 3, train_loss=0.7501, train_top1=0.8376, val_loss=1.4882, val_top1=0.6200, val_top5=0.8783).
+2026-08-23 19:03:25 | INFO    | cicps.trainer | epoch  5/20 | lr 2.82e-04 | train loss 0.4953 top1 0.8978 | val loss 1.4707 top1 0.6250 top5 0.8767 | 18.4s
+2026-08-23 19:03:25 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 4, train_loss=0.4953, train_top1=0.8978, val_loss=1.4707, val_top1=0.6250, val_top5=0.8767).
+2026-08-23 19:03:25 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 4, train_loss=0.4953, train_top1=0.8978, val_loss=1.4707, val_top1=0.6250, val_top5=0.8767).
+2026-08-23 19:03:45 | INFO    | cicps.trainer | epoch  6/20 | lr 2.68e-04 | train loss 0.3038 top1 0.9464 | val loss 1.2644 top1 0.6650 top5 0.9067 | 19.9s
+2026-08-23 19:03:46 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 5, train_loss=0.3038, train_top1=0.9464, val_loss=1.2644, val_top1=0.6650, val_top5=0.9067).
+2026-08-23 19:03:46 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 5, train_loss=0.3038, train_top1=0.9464, val_loss=1.2644, val_top1=0.6650, val_top5=0.9067).
+2026-08-23 19:04:08 | INFO    | cicps.trainer | epoch  7/20 | lr 2.52e-04 | train loss 0.1815 top1 0.9726 | val loss 1.1957 top1 0.7017 top5 0.9100 | 21.3s
+2026-08-23 19:04:08 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 6, train_loss=0.1815, train_top1=0.9726, val_loss=1.1957, val_top1=0.7017, val_top5=0.9100).
+2026-08-23 19:04:09 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 6, train_loss=0.1815, train_top1=0.9726, val_loss=1.1957, val_top1=0.7017, val_top5=0.9100).
+2026-08-23 19:04:29 | INFO    | cicps.trainer | epoch  8/20 | lr 2.32e-04 | train loss 0.1173 top1 0.9865 | val loss 1.1510 top1 0.7033 top5 0.9233 | 20.7s
+2026-08-23 19:04:30 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 7, train_loss=0.1173, train_top1=0.9865, val_loss=1.1510, val_top1=0.7033, val_top5=0.9233).
+2026-08-23 19:04:31 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 7, train_loss=0.1173, train_top1=0.9865, val_loss=1.1510, val_top1=0.7033, val_top5=0.9233).
+2026-08-23 19:04:51 | INFO    | cicps.trainer | epoch  9/20 | lr 2.11e-04 | train loss 0.0762 top1 0.9931 | val loss 1.0629 top1 0.7217 top5 0.9233 | 20.3s
+2026-08-23 19:04:52 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 8, train_loss=0.0762, train_top1=0.9931, val_loss=1.0629, val_top1=0.7217, val_top5=0.9233).
+2026-08-23 19:04:53 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 8, train_loss=0.0762, train_top1=0.9931, val_loss=1.0629, val_top1=0.7217, val_top5=0.9233).
+2026-08-23 19:05:10 | INFO    | cicps.trainer | epoch 10/20 | lr 1.87e-04 | train loss 0.0487 top1 0.9961 | val loss 1.0607 top1 0.7233 top5 0.9267 | 17.7s
+2026-08-23 19:05:11 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 9, train_loss=0.0487, train_top1=0.9961, val_loss=1.0607, val_top1=0.7233, val_top5=0.9267).
+2026-08-23 19:05:12 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 9, train_loss=0.0487, train_top1=0.9961, val_loss=1.0607, val_top1=0.7233, val_top5=0.9267).
+2026-08-23 19:05:29 | INFO    | cicps.trainer | epoch 11/20 | lr 1.63e-04 | train loss 0.0359 top1 0.9985 | val loss 1.0098 top1 0.7383 top5 0.9267 | 17.3s
+2026-08-23 19:05:29 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 10, train_loss=0.0359, train_top1=0.9985, val_loss=1.0098, val_top1=0.7383, val_top5=0.9267).
+2026-08-23 19:05:29 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 10, train_loss=0.0359, train_top1=0.9985, val_loss=1.0098, val_top1=0.7383, val_top5=0.9267).
+2026-08-23 19:05:47 | INFO    | cicps.trainer | epoch 12/20 | lr 1.38e-04 | train loss 0.0233 top1 0.9998 | val loss 1.0104 top1 0.7450 top5 0.9300 | 17.3s
+2026-08-23 19:05:47 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 11, train_loss=0.0233, train_top1=0.9998, val_loss=1.0104, val_top1=0.7450, val_top5=0.9300).
+2026-08-23 19:05:48 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 11, train_loss=0.0233, train_top1=0.9998, val_loss=1.0104, val_top1=0.7450, val_top5=0.9300).
+2026-08-23 19:06:05 | INFO    | cicps.trainer | epoch 13/20 | lr 1.14e-04 | train loss 0.0193 top1 0.9989 | val loss 0.9822 top1 0.7517 top5 0.9300 | 17.0s
+2026-08-23 19:06:05 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 12, train_loss=0.0193, train_top1=0.9989, val_loss=0.9822, val_top1=0.7517, val_top5=0.9300).
+2026-08-23 19:06:05 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 12, train_loss=0.0193, train_top1=0.9989, val_loss=0.9822, val_top1=0.7517, val_top5=0.9300).
+2026-08-23 19:06:23 | INFO    | cicps.trainer | epoch 14/20 | lr 9.04e-05 | train loss 0.0159 top1 0.9993 | val loss 0.9608 top1 0.7583 top5 0.9317 | 18.2s
+2026-08-23 19:06:24 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 13, train_loss=0.0159, train_top1=0.9993, val_loss=0.9608, val_top1=0.7583, val_top5=0.9317).
+2026-08-23 19:06:24 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 13, train_loss=0.0159, train_top1=0.9993, val_loss=0.9608, val_top1=0.7583, val_top5=0.9317).
+2026-08-23 19:06:43 | INFO    | cicps.trainer | epoch 15/20 | lr 6.87e-05 | train loss 0.0129 top1 1.0000 | val loss 0.9489 top1 0.7567 top5 0.9317 | 19.4s
+2026-08-23 19:06:44 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 14, train_loss=0.0129, train_top1=1.0000, val_loss=0.9489, val_top1=0.7567, val_top5=0.9317).
+2026-08-23 19:07:04 | INFO    | cicps.trainer | epoch 16/20 | lr 4.92e-05 | train loss 0.0109 top1 1.0000 | val loss 0.9570 top1 0.7550 top5 0.9350 | 20.0s
+2026-08-23 19:07:04 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 15, train_loss=0.0109, train_top1=1.0000, val_loss=0.9570, val_top1=0.7550, val_top5=0.9350).
+2026-08-23 19:07:22 | INFO    | cicps.trainer | epoch 17/20 | lr 3.25e-05 | train loss 0.0109 top1 0.9998 | val loss 0.9461 top1 0.7617 top5 0.9350 | 18.6s
+2026-08-23 19:07:23 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 16, train_loss=0.0109, train_top1=0.9998, val_loss=0.9461, val_top1=0.7617, val_top5=0.9350).
+2026-08-23 19:07:23 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 16, train_loss=0.0109, train_top1=0.9998, val_loss=0.9461, val_top1=0.7617, val_top5=0.9350).
+2026-08-23 19:07:41 | INFO    | cicps.trainer | epoch 18/20 | lr 1.90e-05 | train loss 0.0098 top1 1.0000 | val loss 0.9525 top1 0.7567 top5 0.9350 | 18.2s
+2026-08-23 19:07:41 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 17, train_loss=0.0098, train_top1=1.0000, val_loss=0.9525, val_top1=0.7567, val_top5=0.9350).
+2026-08-23 19:08:01 | INFO    | cicps.trainer | epoch 19/20 | lr 9.10e-06 | train loss 0.0095 top1 0.9998 | val loss 0.9559 top1 0.7533 top5 0.9333 | 19.5s
+2026-08-23 19:08:01 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 18, train_loss=0.0095, train_top1=0.9998, val_loss=0.9559, val_top1=0.7533, val_top5=0.9333).
+2026-08-23 19:08:22 | INFO    | cicps.trainer | epoch 20/20 | lr 3.04e-06 | train loss 0.0093 top1 0.9998 | val loss 0.9526 top1 0.7600 top5 0.9317 | 21.2s
+2026-08-23 19:08:23 | INFO    | cicps.checkpoint | Saved checkpoint to D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_last.pt (epoch 19, train_loss=0.0093, train_top1=0.9998, val_loss=0.9526, val_top1=0.7600, val_top5=0.9317).
+2026-08-23 19:08:23 | INFO    | cicps.trainer | Wrote training history to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\train_history.csv
+2026-08-23 19:08:23 | INFO    | cicps.trainer | Best val_top1 = 0.7617; best checkpoint: D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt
+2026-08-23 19:08:23 | INFO    | cicps.train | Training complete. Best checkpoint: D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt
