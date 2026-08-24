@@ -1,0 +1,21 @@
+2026-08-23 19:09:41 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\audit.log
+2026-08-23 19:09:41 | INFO    | cicps.audit | Configuration: D:\Projects\cicps-augmentation\config\experiment_0a.yaml
+2026-08-23 19:09:41 | INFO    | cicps.seeding | Seeded RNGs with master seed 42 (cudnn.deterministic=True, cudnn.benchmark=False, deterministic_algorithms=False)
+2026-08-23 19:09:41 | INFO    | cicps.device | Device: cuda (NVIDIA GeForce RTX 3050 Laptop GPU, 4.0 GB)
+2026-08-23 19:09:41 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-08-23 19:09:41 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-08-23 19:09:41 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 16, seed 42, metrics: train_loss=0.0109, train_top1=0.9998, val_loss=0.9461, val_top1=0.7617, val_top5=0.9350).
+2026-08-23 19:09:41 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-08-23 19:09:41 | INFO    | cicps.audit | Auditing 7 transformation(s): identity, horizontal_flip, color_jitter, rotation, random_resized_crop, gaussian_blur, random_erasing
+2026-08-23 19:09:41 | INFO    | cicps.engine | Auditing 600 validation image(s) x 7 transformation(s) = 4200 record(s).
+2026-08-23 19:10:34 | INFO    | cicps.engine | Original pass: top-1 accuracy 0.7617, mean margin 0.4981 (median 0.8109).
+2026-08-23 19:11:28 | INFO    | cicps.engine | identity               mean dM +0.00000 | median dM +0.00000 | frac dM<0 0.000 | mean cos 1.0000 | pred-consistency 1.000 | acc 0.7617 -> 0.7617
+2026-08-23 19:12:20 | INFO    | cicps.engine | horizontal_flip        mean dM +0.03487 | median dM +0.00125 | frac dM<0 0.442 | mean cos 0.9619 | pred-consistency 0.883 | acc 0.7617 -> 0.7800
+2026-08-23 19:13:13 | INFO    | cicps.engine | color_jitter           mean dM -0.14534 | median dM -0.04407 | frac dM<0 0.683 | mean cos 0.9185 | pred-consistency 0.695 | acc 0.7617 -> 0.6000
+2026-08-23 19:14:12 | INFO    | cicps.engine | rotation               mean dM -0.00716 | median dM -0.00070 | frac dM<0 0.530 | mean cos 0.9598 | pred-consistency 0.865 | acc 0.7617 -> 0.7483
+2026-08-23 19:15:07 | INFO    | cicps.engine | random_resized_crop    mean dM -0.05927 | median dM -0.00462 | frac dM<0 0.568 | mean cos 0.9378 | pred-consistency 0.790 | acc 0.7617 -> 0.6983
+2026-08-23 19:16:03 | INFO    | cicps.engine | gaussian_blur          mean dM -0.21115 | median dM -0.14582 | frac dM<0 0.713 | mean cos 0.8647 | pred-consistency 0.610 | acc 0.7617 -> 0.5350
+2026-08-23 19:17:03 | INFO    | cicps.engine | random_erasing         mean dM -0.12161 | median dM -0.01488 | frac dM<0 0.650 | mean cos 0.9272 | pred-consistency 0.745 | acc 0.7617 -> 0.6300
+2026-08-23 19:17:03 | INFO    | cicps.records | Wrote 4200 row(s) x 24 column(s) to D:\Projects\cicps-augmentation\outputs\experiment_0a\audit\transformation_audit.csv
+2026-08-23 19:17:03 | INFO    | cicps.records | Wrote 600 row(s) x 13 column(s) to D:\Projects\cicps-augmentation\outputs\experiment_0a\audit\original_predictions.csv
+2026-08-23 19:17:03 | INFO    | cicps.audit | Wrote audit manifest to D:\Projects\cicps-augmentation\outputs\experiment_0a\audit\audit_manifest.json
