@@ -1,0 +1,26 @@
+2026-08-23 18:48:24 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\verify.log
+2026-08-23 18:48:24 | INFO    | cicps.verify | Configuration: D:\Projects\cicps-augmentation\config\experiment_0a.yaml
+2026-08-23 18:48:24 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-08-23 18:48:24 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-08-23 18:48:24 | INFO    | cicps.verify | Verifying determinism on 8 validation image(s).
+2026-08-23 18:48:25 | INFO    | cicps.verify | identity               params_reproducible=True tensor_reproducible=True max|T(x)-x|=0.000000
+2026-08-23 18:48:25 | INFO    | cicps.verify | horizontal_flip        params_reproducible=True tensor_reproducible=True max|T(x)-x|=4.079132
+2026-08-23 18:48:25 | INFO    | cicps.verify | color_jitter           params_reproducible=True tensor_reproducible=True max|T(x)-x|=1.352855
+2026-08-23 18:48:25 | INFO    | cicps.verify | rotation               params_reproducible=True tensor_reproducible=True max|T(x)-x|=4.446778
+2026-08-23 18:48:25 | INFO    | cicps.verify | random_resized_crop    params_reproducible=True tensor_reproducible=True max|T(x)-x|=3.938998
+2026-08-23 18:48:25 | INFO    | cicps.verify | gaussian_blur          params_reproducible=True tensor_reproducible=True max|T(x)-x|=1.882353
+2026-08-23 18:48:25 | INFO    | cicps.verify | random_erasing         params_reproducible=True tensor_reproducible=True max|T(x)-x|=2.640000
+2026-08-23 18:48:25 | INFO    | cicps.verify | All 7 transformation(s) are deterministic per sample.
+2026-08-23 19:09:22 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\verify.log
+2026-08-23 19:09:22 | INFO    | cicps.verify | Configuration: D:\Projects\cicps-augmentation\config\experiment_0a.yaml
+2026-08-23 19:09:23 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-08-23 19:09:23 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-08-23 19:09:23 | INFO    | cicps.verify | Verifying determinism on 6 validation image(s).
+2026-08-23 19:09:23 | INFO    | cicps.verify | identity               params_reproducible=True tensor_reproducible=True max|T(x)-x|=0.000000
+2026-08-23 19:09:23 | INFO    | cicps.verify | horizontal_flip        params_reproducible=True tensor_reproducible=True max|T(x)-x|=4.079132
+2026-08-23 19:09:23 | INFO    | cicps.verify | color_jitter           params_reproducible=True tensor_reproducible=True max|T(x)-x|=1.352855
+2026-08-23 19:09:23 | INFO    | cicps.verify | rotation               params_reproducible=True tensor_reproducible=True max|T(x)-x|=4.446778
+2026-08-23 19:09:23 | INFO    | cicps.verify | random_resized_crop    params_reproducible=True tensor_reproducible=True max|T(x)-x|=3.938998
+2026-08-23 19:09:23 | INFO    | cicps.verify | gaussian_blur          params_reproducible=True tensor_reproducible=True max|T(x)-x|=1.882353
+2026-08-23 19:09:23 | INFO    | cicps.verify | random_erasing         params_reproducible=True tensor_reproducible=True max|T(x)-x|=2.640000
+2026-08-23 19:09:23 | INFO    | cicps.verify | All 7 transformation(s) are deterministic per sample.
