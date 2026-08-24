@@ -1,0 +1,51 @@
+# =============================================================================
+# Smoke-test override for Experiment 0A.
+#
+# Deep-merged over config/experiment_0a.yaml to exercise the full pipeline
+# (train -> audit -> analyze) in a couple of minutes:
+#
+#   python -m cicps train   --config config/experiment_0a.yaml --override config/smoke_0a.yaml
+#   python -m cicps audit   --config config/experiment_0a.yaml --override config/smoke_0a.yaml
+#   python -m cicps analyze --config config/experiment_0a.yaml --override config/smoke_0a.yaml
+#
+# It writes to outputs/smoke_0a/ so it never clobbers a real run, and it reuses
+# the SAME internal split manifest so the smoke run and the real run agree about
+# which images are validation images.
+#
+# THIS IS NOT A SCIENTIFIC RUN. One epoch on a truncated audit set produces a
+# near-random baseline; the numbers it emits are meaningless and must never be
+# reported. It exists only to prove the plumbing works.
+# =============================================================================
+
+experiment:
+  name: experiment_0a_smoke
+
+train:
+  epochs: 1
+  # A single epoch leaves no room for warmup (warmup_epochs must be < epochs).
+  scheduler:
+    warmup_epochs: 0
+  batch_size: 16
+  eval_batch_size: 32
+  num_workers: 0
+  persistent_workers: false
+  checkpoint:
+    dir: outputs/smoke_0a/checkpoints
+  history_path: outputs/smoke_0a/logs/train_history.csv
+
+audit:
+  checkpoint: outputs/smoke_0a/checkpoints/baseline_best.pt
+  batch_size: 32
+  num_workers: 0
+  max_images: 24
+  output:
+    dir: outputs/smoke_0a/audit
+
+analysis:
+  output:
+    dir: outputs/smoke_0a/analysis
+  plots:
+    dir: outputs/smoke_0a/analysis/plots
+
+logging:
+  dir: outputs/smoke_0a/logs
