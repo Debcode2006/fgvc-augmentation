@@ -1,0 +1,21 @@
+# CICPS augmentation research environment
+#
+# PyTorch is installed from the CUDA 12.8 wheel index. Install with:
+#
+#   pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu128
+#
+# For a CPU-only machine, drop the --extra-index-url flag and PyPI's default
+# CPU wheels will be used instead.
+
+torch>=2.6
+torchvision>=0.21
+
+numpy>=1.26
+pandas>=2.2
+pyyaml>=6.0
+pillow>=10.0
+matplotlib>=3.8
+tqdm>=4.66
+
+# Only needed when audit.output.format / analysis.output.format is `parquet`.
+pyarrow>=15.0
