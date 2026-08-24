@@ -1,0 +1,310 @@
+# =============================================================================
+# Experiment 0A - Transformation Audit (CUB-200-2011)
+#
+# THIS FILE IS THE SINGLE SOURCE OF TRUTH FOR THE EXPERIMENT.
+#
+# No experiment-defining value may be hard-coded in Python. Every path, size,
+# hyper-parameter, transformation strength and output name lives here. Changing
+# this file (or passing an override file) must be sufficient to change the
+# experiment without editing any source file.
+#
+# Experiment 0A is a falsification / mechanism test. It asks:
+#   "Do different image transformations cause measurably different changes in an
+#    image's discriminative separation from its closest competing class?"
+#
+# It does NOT implement DPGA and does NOT run Experiment 0B.
+# =============================================================================
+
+experiment:
+  name: experiment_0a
+  description: >-
+    Transformation audit: measure the change in the pairwise discriminative
+    margin M_yc = p_y - p_c between an image and its frozen hardest competing
+    class, under seven deterministic transformations.
+
+# -----------------------------------------------------------------------------
+# Reproducibility
+# -----------------------------------------------------------------------------
+seed:
+  # Master seed. Drives Python / NumPy / torch / CUDA RNGs, the internal
+  # train/validation split, and the per-sample transformation parameters.
+  value: 42
+  # torch.use_deterministic_algorithms(True). Slower; may raise on ops that have
+  # no deterministic kernel. Documented in docs/experiment_0a.md.
+  deterministic_algorithms: false
+  # cudnn.deterministic / cudnn.benchmark
+  cudnn_deterministic: true
+  cudnn_benchmark: false
+  # Seed each DataLoader worker deterministically from the master seed.
+  seed_dataloader_workers: true
+
+# -----------------------------------------------------------------------------
+# Dataset - CUB-200-2011 (official layout, never rearranged)
+# -----------------------------------------------------------------------------
+dataset:
+  name: cub_200_2011
+  root: data/CUB_200_2011
+  images_dir: images
+  # Official CUB metadata files, relative to `root`.
+  metadata:
+    images: images.txt
+    labels: image_class_labels.txt
+    split: train_test_split.txt
+    classes: classes.txt
+  expected:
+    num_images: 11788
+    num_classes: 200
+    num_official_train: 5994
+    num_official_test: 5794
+  # Strictness of the dataset validation stage.
+  validation:
+    # Stat every referenced image file. Reads no pixel data.
+    check_image_paths: true
+    # Additionally open each image header to confirm it decodes. Slow-ish;
+    # off by default because `check_image_paths` already catches missing files.
+    check_image_readable: false
+    # Abort (rather than warn) when observed counts differ from `expected`.
+    strict_counts: true
+
+# -----------------------------------------------------------------------------
+# Internal train/validation split
+#
+# Carved out of the OFFICIAL TRAIN portion only. The official test portion is
+# locked and is never loaded by any stage of Experiment 0A.
+# -----------------------------------------------------------------------------
+split:
+  # Fraction of the official training portion held out for validation.
+  val_fraction: 0.1
+  # Stratify by species so every class appears in both internal subsets.
+  stratified: true
+  # Split seed. `null` inherits seed.value, keeping one master seed.
+  seed: null
+  # Persisted split manifest. Written by `prepare-data`, consumed (and integrity
+  # checked) by `train` and `audit` so later experiments reuse the exact split.
+  path: outputs/experiment_0a/splits/internal_split.json
+  # Regenerate the manifest even if it already exists.
+  overwrite: false
+
+# -----------------------------------------------------------------------------
+# Baseline model
+#
+# Deliberately conventional. The model exists only to provide a stable
+# discriminative representation against which augmentation damage is measured.
+# -----------------------------------------------------------------------------
+model:
+  architecture: resnet18
+  pretrained: true
+  # torchvision weights enum name, or `null` for the current default weights.
+  weights: IMAGENET1K_V1
+  num_classes: 200
+  # Penultimate (post-global-pool) feature width, used by the audit's feature
+  # consistency metric. `null` = infer from the architecture.
+  feature_dim: null
+
+# -----------------------------------------------------------------------------
+# Image preprocessing
+#
+# `eval` defines the canonical 224x224 view. Experiment 0A's transformations are
+# applied ON TOP of that canonical view, so `identity` is a true no-op and every
+# transformation differs from `identity` by exactly one operation.
+# -----------------------------------------------------------------------------
+preprocess:
+  image_size: 224
+  resize_size: 256
+  interpolation: bilinear
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+# -----------------------------------------------------------------------------
+# Baseline training
+# -----------------------------------------------------------------------------
+train:
+  epochs: 20
+  batch_size: 32
+  eval_batch_size: 64
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+  # Mixed precision. Keeps ResNet-18 @ 224 x bs32 inside a 4 GB card.
+  amp:
+    enabled: true
+    dtype: float16
+  # Gradient clipping; `null` disables.
+  grad_clip_norm: null
+  optimizer:
+    name: adamw
+    lr: 3.0e-4
+    weight_decay: 0.05
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+  scheduler:
+    name: cosine
+    # Linear warmup epochs before the cosine decay begins. 0 disables warmup.
+    warmup_epochs: 1
+    min_lr: 1.0e-6
+  loss:
+    name: cross_entropy
+    label_smoothing: 0.0
+  # Stochastic augmentation used ONLY while training the baseline. This is the
+  # conventional recipe; it is unrelated to the audited transformation set.
+  augmentation:
+    random_resized_crop:
+      enabled: true
+      scale: [0.7, 1.0]
+      ratio: [0.75, 1.3333]
+    horizontal_flip:
+      enabled: true
+      p: 0.5
+  checkpoint:
+    dir: outputs/experiment_0a/checkpoints
+    last_name: baseline_last.pt
+    best_name: baseline_best.pt
+    # Validation metric used to select the best checkpoint.
+    monitor: val_top1
+    mode: max
+    save_optimizer_state: true
+    save_last: true
+  # Per-epoch metric history (CSV).
+  history_path: outputs/experiment_0a/logs/train_history.csv
+
+# -----------------------------------------------------------------------------
+# Transformation audit
+# -----------------------------------------------------------------------------
+audit:
+  # Checkpoint to freeze and audit.
+  checkpoint: outputs/experiment_0a/checkpoints/baseline_best.pt
+  batch_size: 64
+  num_workers: 4
+  pin_memory: true
+  amp:
+    # Disabled by default: probabilities are the measurement instrument here and
+    # fp32 keeps small margins numerically clean.
+    enabled: false
+    dtype: float16
+  # Cap the number of validation images audited. `null` = all of them.
+  # Used by the smoke test; must be null for a real run.
+  max_images: null
+  # Seed for per-sample transformation parameters. `null` inherits seed.value.
+  # Parameters are drawn from a generator keyed by (seed, image_id, transform),
+  # so each sample gets its own fixed - and exactly reproducible - parameters.
+  transform_param_seed: null
+  # Progress bar.
+  progress: true
+  output:
+    dir: outputs/experiment_0a/audit
+    # `csv` or `parquet`.
+    format: csv
+    records_name: transformation_audit
+    # Also persist the frozen per-image originals (competitor, margin, ...).
+    originals_name: original_predictions
+    float_precision: 8
+
+# -----------------------------------------------------------------------------
+# Transformations audited by Experiment 0A - the exact seven.
+#
+# `identity` MUST stay first and MUST stay a no-op: it is the control arm and
+# its delta_margin is the numerical-noise floor of the whole measurement.
+#
+# Each entry is {name, type, params}. `type` selects a registered deterministic
+# transform implementation; `params` are its strengths. Adding an eighth
+# transformation = registering an implementation and appending an entry here.
+# No audit-engine change is required.
+#
+# Every transform is deterministic per sample: parameters are drawn once from a
+# generator keyed by (audit.transform_param_seed, image_id, transform name).
+# -----------------------------------------------------------------------------
+transformations:
+  - name: identity
+    type: identity
+    params: {}
+
+  - name: horizontal_flip
+    type: horizontal_flip
+    params: {}
+
+  - name: color_jitter
+    type: color_jitter
+    params:
+      brightness: 0.4
+      contrast: 0.4
+      saturation: 0.4
+      hue: 0.1
+
+  - name: rotation
+    type: rotation
+    params:
+      degrees: 15.0
+      interpolation: bilinear
+      expand: false
+      fill: 0
+
+  - name: random_resized_crop
+    type: random_resized_crop
+    params:
+      scale: [0.5, 0.9]
+      ratio: [0.75, 1.3333]
+      interpolation: bilinear
+
+  - name: gaussian_blur
+    type: gaussian_blur
+    params:
+      kernel_size: 9
+      sigma: [1.0, 2.0]
+
+  - name: random_erasing
+    type: random_erasing
+    params:
+      scale: [0.05, 0.2]
+      ratio: [0.3, 3.3]
+      # Erase value in NORMALISED tensor space. 0.0 == the ImageNet mean colour.
+      value: 0.0
+
+# -----------------------------------------------------------------------------
+# Analysis and plots
+# -----------------------------------------------------------------------------
+analysis:
+  # Quantiles reported in the per-transformation summary table.
+  quantiles: [0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99]
+  # Restrict the summary/plots to images the baseline already classified
+  # correctly. `false` keeps every validation image; a `correct_original`
+  # column is always present so the analysis can be re-sliced downstream.
+  filter_correct_original_only: false
+  output:
+    dir: outputs/experiment_0a/analysis
+    format: csv
+    summary_name: transformation_summary
+  plots:
+    # Any subset of: violin, box, hist, ecdf.
+    kinds: [violin, box, hist]
+    # Ordering of transformations on the axes. `config` preserves the order
+    # declared above and makes no claim about which transform is "safe".
+    # `median` sorts by median delta_margin (descriptive only).
+    order: config
+    dpi: 200
+    figsize: [12, 6]
+    # Symmetric x/y limit for delta_margin axes; `null` = data-driven.
+    delta_margin_limit: null
+    hist_bins: 60
+    file_format: png
+    dir: outputs/experiment_0a/analysis/plots
+
+# -----------------------------------------------------------------------------
+# Runtime
+# -----------------------------------------------------------------------------
+runtime:
+  # `auto` -> cuda when available, else cpu. Or set `cuda` / `cuda:0` / `cpu`.
+  device: auto
+  # Fail loudly instead of silently training on CPU when cuda was requested.
+  require_device: false
+
+logging:
+  level: INFO
+  dir: outputs/experiment_0a/logs
+  # Per-stage log file; {stage} is substituted with train/audit/... .
+  file_template: "{stage}.log"
+  to_file: true
+  to_console: true
+  format: "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
