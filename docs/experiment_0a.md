@@ -732,7 +732,169 @@ Guaranteed reproducible given the same configuration and seed:
 
 ---
 
-## 33. What results would SUPPORT the hypothesis
+## 33. Results
+
+**Run date:** 2026-08-23. **Hardware:** RTX 3050 Laptop (4 GB). **Seed:** 42
+throughout (training, split, transform parameters).
+
+### 33.1 Baseline
+
+Best checkpoint selected at epoch 17/20 by `val_top1`:
+
+| Metric | Value |
+| --- | --- |
+| `val_top1` | 76.17 % |
+| `val_top5` | 93.50 % |
+| `train_top1` (final) | 99.98 % |
+| `val_loss` | 0.9461 |
+
+This matches the reference run documented in §12 (76.2 % / 93.5 %), so the
+baseline is behaving as an ordinary, reasonably-fit instrument — not
+under-trained, and the large train/val gap is unremarkable overfitting of a
+20-epoch ImageNet-pretrained ResNet-18 on ~27 images/class, not a pipeline
+defect. `original_margin_mean` of 0.498 (from the summary table below) confirms
+the model is, on average, meaningfully separating true class from hardest
+competitor before any transformation is applied.
+
+### 33.2 Control arm
+
+`identity`: `delta_margin` mean/std/min/max all exactly `0.0`, `feature_cosine`
+exactly `1.0`, prediction consistency exactly `1.0`. The noise floor is bit-exact
+as designed (§18, §32) — every non-zero number reported below is attributable to
+the transformation itself, not evaluation jitter.
+
+### 33.3 Per-transformation summary (600 images × 7 arms, 4,200 rows)
+
+| Transform | ΔM mean | ΔM median | ΔM std | %ΔM<0 | Acc. Δ | Feature cos. mean | Pred. consistency |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| identity | 0.000 | 0.000 | 0.000 | 0 % | 0.000 | 1.000 | 100.0 % |
+| horizontal_flip | **+0.0349** | +0.0013 | 0.240 | 44.2 % | **+0.018** | 0.962 | 88.3 % |
+| rotation | −0.0072 | −0.0007 | 0.252 | 53.0 % | −0.013 | 0.960 | 86.5 % |
+| random_resized_crop | −0.0593 | −0.0046 | 0.349 | 56.8 % | −0.063 | 0.938 | 79.0 % |
+| random_erasing | −0.1216 | −0.0149 | 0.391 | 65.0 % | −0.132 | 0.927 | 74.5 % |
+| color_jitter | −0.1453 | −0.0441 | 0.414 | 68.3 % | −0.162 | 0.919 | 69.5 % |
+| gaussian_blur | **−0.2111** | −0.1458 | 0.463 | 71.3 % | **−0.227** | 0.865 | 61.0 % |
+
+(Full table with quantiles in
+`outputs/experiment_0a/analysis/transformation_summary.csv`; distributions in
+`outputs/experiment_0a/analysis/plots/`.)
+
+### 33.4 Non-redundancy check
+
+Correlating `delta_margin` against the supporting metrics, per-arm and pooled
+over the six non-identity transforms (n = 3,600):
+
+* `corr(ΔM, feature_cosine)` = **0.343** overall (R² ≈ 0.12) — ranges from
+  −0.13 (`horizontal_flip`) to +0.44 (`random_erasing`) across arms.
+* `corr(ΔM, prediction_consistent)` = **0.149** overall — weaker still.
+
+Feature-space movement explains at most ~1/8 of the variance in the pairwise
+margin damage; the rest is signal `feature_cosine` does not carry.
+
+### 33.5 Reading the results against §33–34's criteria
+
+Checking each pre-registered signal from the falsification criteria in
+§34–35:
+
+* **Separation between arms — present.** The six non-identity transforms span
+  a mean `ΔM` range from +0.035 (`horizontal_flip`) to −0.211 (`gaussian_blur`),
+  roughly a 6× spread, and `gaussian_blur`'s median (−0.146) sits nowhere near
+  any other arm's. This is well beyond the `identity` noise floor of exactly
+  `0.0`.
+* **A meaningful negative tail — present, and large.** `gaussian_blur`,
+  `color_jitter` and `random_erasing` each destroy discriminative separation
+  (`ΔM < 0`) on 65–71 % of images, with 1st-percentile `ΔM` around −1.3 to −1.5
+  (out of a [−2, 2] range) — not a rare edge case, a routine outcome for a
+  majority of samples.
+* **Non-redundancy with feature_cosine / prediction consistency — present.**
+  R² ≈ 0.12 (§33.4) means the pairwise margin is measuring something the
+  generic feature-distance and consistency metrics largely miss.
+  `gaussian_blur`'s `feature_cosine` mean of 0.865 still reads as "the
+  representation mostly held" by a generic-similarity standard, while its
+  `ΔM` and accuracy both collapse — exactly the gap a discriminative-preservation
+  criterion is meant to catch that a feature-distance criterion would not.
+* **Heterogeneity within a transformation — present.** Every arm's `ΔM` std
+  (0.24–0.46) dwarfs its mean (0.007–0.21): most of the spread is *within* a
+  transformation, not between transformations. `rotation`'s mean ΔM (−0.007) is
+  barely different from zero, yet its std (0.252) is close to `gaussian_blur`'s
+  — the same nominal transform is nearly harmless for some images and quite
+  damaging for others.
+
+None of the falsifying patterns in §35 hold: the arms are not
+indistinguishable, the spread is not identity-comparable noise, `ΔM` is not
+redundant with the supporting metrics, and damage is not transform-only —
+it is strongly sample-dependent.
+
+### 33.6 My reading
+
+**Objective fulfilled.** Experiment 0A's stated job (§4) was to show the
+pairwise margin is measurable and moves differently across transformations
+using a plain, honestly-trained baseline — done, and cleanly: the identity
+control is exact, the baseline is not degenerate, and the six other arms are
+clearly separated from each other and from identity.
+
+**What the numbers intuit to:**
+
+* `horizontal_flip` is close to a free lunch for CUB — it's the only arm with
+  positive mean `ΔM` and it *improves* accuracy (+1.8 pts). That's consistent
+  with birds not having a canonical left/right orientation for most
+  discriminative features, so mirroring adds a valid view rather than
+  destroying evidence. This is also the arm already baked into the training
+  augmentation (§12) — its safety here is corroborating evidence for that
+  choice, not a new finding.
+* `gaussian_blur` is the clearest destructive outlier by a wide margin on
+  every axis (ΔM, accuracy, feature cosine, prediction consistency). That
+  tracks the motivating hypothesis directly: blur removes exactly the
+  high-frequency, localized texture (wing-bars, barring, throat-patch edges)
+  that separates look-alike species, while leaving the image obviously "a
+  bird of roughly that shape" — global appearance survives, fine-grained
+  evidence does not.
+  `color_jitter` and `random_erasing` sit in the same destructive family for
+  related but distinct reasons: jitter can shift or wash out a diagnostic hue,
+  erasing can blank out the exact patch that mattered for a given image (but
+  only for images where that patch happened to be under the erased box — hence
+  its high variance).
+* `rotation` and `random_resized_crop` land in between, and their *low* mean
+  ΔM despite comparable-or-higher variance than color_jitter/erasing is a good
+  illustration of why mean ΔM alone is a weak safety signal: rotation looks
+  "mild" on average but still has a heavy negative tail (q01 ≈ −0.74) and only
+  86.5 % prediction consistency — a policy that treats it as uniformly safe
+  because its mean is near zero would still be silently damaging a sizeable
+  minority of images.
+* The non-redundancy result (§33.4) is arguably the most important number for
+  the *programme*, not just this experiment: it says a cheap generic proxy
+  (feature cosine, or a top-1-flip check) would not have caught most of what
+  the pairwise margin catches. That's the concrete justification for building
+  something like DPGA around this specific metric rather than around a
+  generic consistency regularizer.
+
+**How much of the hypothesis has been proved — and what has not.** This
+experiment establishes the *precondition* for the programme, no more: the
+phenomenon exists, is transformation-dependent, is sample-dependent, and is
+not just relabeled feature drift. It does **not** establish (and was
+explicitly not designed to, §5, §36):
+
+* that any of this margin damage actually costs downstream accuracy when a
+  model is *trained* under the damaging transform rather than merely *probed*
+  with a frozen one — §33.5's accuracy columns are audit-time correctness
+  deltas on a frozen model, not a trained-under-augmentation comparison;
+* that the effect generalizes beyond one seed, one architecture (ResNet-18)
+  and one dataset (CUB-200-2011);
+* causality between margin damage and the diagnostic regions this document
+  hypothesizes about (wing-bars, hue, etc.) — no part-annotation or
+  localization analysis was run (§36).
+
+So: hypothesis *supported*, not *proved*. The honest next step is exactly
+§37's Experiment 0B — train under `gaussian_blur`-heavy vs.
+`horizontal_flip`-only augmentation policies on the same split and check
+whether 0A's margin ranking predicts the resulting accuracy gap. Until that
+causal link is shown, this is evidence the measurement is real and
+informative, not yet evidence that acting on it would improve a trained
+model.
+
+---
+
+## 34. What results would SUPPORT the hypothesis
 
 The hypothesis under test is that discriminative preservation is *measurable and
 transformation-dependent*. Supporting evidence would look like:
@@ -752,7 +914,7 @@ transformation-dependent*. Supporting evidence would look like:
   transformation would mean the damage is *sample-dependent*, which is the
   precondition for any per-sample augmentation policy.
 
-## 34. What results would WEAKEN or FALSIFY the hypothesis
+## 35. What results would WEAKEN or FALSIFY the hypothesis
 
 * **No separation.** All seven `ΔM` distributions are effectively
   indistinguishable — augmentation choice does not measurably affect pairwise
@@ -771,7 +933,7 @@ A negative result here is a legitimate and useful outcome: it would falsify the
 premise of the proposed method before any effort is spent building it. **Do not
 tune the experiment until it produces a positive result.**
 
-## 35. DPGA and Experiment 0B are NOT implemented
+## 36. DPGA and Experiment 0B are NOT implemented
 
 Explicitly and by design, this repository currently contains **no**
 implementation of:
@@ -790,7 +952,7 @@ The architecture is intended to make these additions possible without rewriting
 Experiment 0A — a new transformation is a registry entry plus a YAML block, and
 a new metric is a registry entry — but none of them exists yet.
 
-## 36. Clear next step after Experiment 0A
+## 37. Clear next step after Experiment 0A
 
 1. **Run the full audit and read the `ΔM` distributions** against §33–34. Decide
    honestly whether the phenomenon is present, absent, or redundant with the
