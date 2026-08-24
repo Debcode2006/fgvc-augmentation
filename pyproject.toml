@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cicps"
+version = "0.1.0"
+description = "Measuring the preservation of fine-grained discriminative evidence under image augmentation (CUB-200-2011)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.6",
+    "torchvision>=0.21",
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "pyyaml>=6.0",
+    "pillow>=10.0",
+    "matplotlib>=3.8",
+    "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+parquet = ["pyarrow>=15.0"]
+
+[project.scripts]
+cicps = "cicps.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
