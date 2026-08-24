@@ -1,6 +1,11 @@
-# Generated experiment artefacts (splits, checkpoints, logs, dataframes, plots).
-# Regenerate with the commands in README.md; the configuration is the record.
-outputs/
+# Generated experiment artefacts are tracked (splits, logs, dataframes, plots)
+# so results are visible on GitHub without re-running the pipeline. Model
+# checkpoints are excluded: large binaries, and trivially regenerable via
+# `python -m cicps train` (see README.md).
+outputs/**/checkpoints/
+
+# Smoke-test run: plumbing check only, numbers are meaningless (docs/experiment_0a.md §26).
+outputs/smoke_0a/
 
 # The dataset is not tracked; see docs/experiment_0a.md for the expected layout.
 data/
