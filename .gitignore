@@ -1,0 +1,17 @@
+# Generated experiment artefacts (splits, checkpoints, logs, dataframes, plots).
+# Regenerate with the commands in README.md; the configuration is the record.
+outputs/
+
+# The dataset is not tracked; see docs/experiment_0a.md for the expected layout.
+data/
+
+# Environments and build artefacts
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
