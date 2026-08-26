@@ -925,6 +925,104 @@ separated from training noise (§24.1).
 
 ---
 
+## 30. Scientific run results (executed 2026-08-26)
+
+The scientific run described in §26 was executed end-to-end on the reference
+hardware (RTX 3050 Laptop, 4 GB) against `config/experiment_0b.yaml` with no
+overrides. `scripts/check_smoke_0b.py` reported **75/75 checks passed** — all
+six arms share the split fingerprint `2c3a0390542d2a57`, dataset sizes,
+epoch/batch/optimizer/scheduler/architecture settings, every recorded metric is
+finite, no official test image entered training or validation, and every
+required checkpoint, history file and plot exists.
+
+### Per-policy result (best internal-validation top-1)
+
+| Policy | 0A transform | Best val top-1 | Δ vs baseline | Best val top-5 | Best epoch |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `baseline` | — | 0.7817 | — | 0.9300 | 14 |
+| `baseline_crop` | random_resized_crop | 0.7867 | **+0.0050** | 0.9417 | 19 |
+| `baseline_gaussian_blur` | gaussian_blur | 0.7700 | −0.0117 | 0.9367 | 19 |
+| `baseline_rotation` | rotation | 0.7600 | −0.0217 | 0.9383 | 15 |
+| `baseline_random_erasing` | random_erasing | 0.7583 | −0.0233 | 0.9267 | 19 |
+| `baseline_color_jitter` | color_jitter | 0.7383 | −0.0433 | 0.9183 | 16 |
+
+Only `baseline_crop` matched or exceeded the baseline; every other arm lost
+between roughly 1 and 4 accuracy points. With one seed per policy (§24.1) this
+ordering carries training noise as well as policy effect and must not be read
+as a ranking of "good" vs "bad" augmentations.
+
+### The 0A/0B join
+
+| Transformation | 0A mean ΔM | 0A frac ΔM<0 | 0B Δ val top-1 vs baseline |
+| --- | ---: | ---: | ---: |
+| gaussian_blur | −0.2111 (worst) | 0.713 | −0.0117 |
+| color_jitter | −0.1453 | 0.683 | −0.0433 (worst) |
+| random_erasing | −0.1216 | 0.650 | −0.0233 |
+| random_resized_crop | −0.0593 | 0.568 | +0.0050 (best) |
+| rotation | −0.0072 (least negative) | 0.530 | −0.0217 |
+
+Exploratory association (`association_exploratory.csv`, n = 5 transformation
+points, descriptive only, no significance test): Pearson r = **0.200**,
+Spearman ρ = **0.200**, both between 0A `delta_margin_mean` and the 0B
+baseline-relative accuracy delta.
+
+### Reading against §23's three outcomes
+
+The ranking by 0A damage (worst → least: blur, color_jitter, random_erasing,
+crop, rotation) does **not** track the ranking by downstream accuracy loss
+(worst → least: color_jitter, random_erasing, rotation, blur, crop). The
+transformation with by far the most negative 0A `ΔM` — Gaussian blur, more than
+40% more negative than the next-worst arm — produced only the **second-mildest**
+downstream accuracy drop, beaten only by the crop arm. Conversely, rotation,
+which had the mildest 0A damage of the five (`ΔM` an order of magnitude closer
+to zero than blur's), produced one of the larger downstream losses. The
+correlation across all five points is weak and positive (r ≈ 0.2) — far too
+close to zero, and computed on far too few points (§24.2), to read as
+confirmation of anything.
+
+**This is Outcome B (§23): a weak-or-no relationship, with a visible element of
+Outcome C for the blur arm specifically.** Concretely:
+
+* **H0 (null) is the best-supported reading of the data as a whole.**
+  Transformation-induced margin damage under the frozen-model audit does not
+  correspond, in any consistent way, to how a training arm built around that
+  same transformation performs downstream at this scale (five points, one seed
+  each, 20-epoch budget).
+* **H1 (relevance) is not supported.** If anything, the transformation that
+  looked most damaging to the frozen model (blur) was one of the least harmful
+  to actually train with.
+* **H2 (inversion) is not established either**, and must not be claimed from
+  this run: only one arm (crop) beat the baseline at all, and blur still lost
+  accuracy relative to baseline — it simply lost less than three of the four
+  other arms, despite having the worst audit score by a wide margin. A true
+  inversion result would need worse-audited transformations to reliably produce
+  *better* downstream models, which did not happen here.
+
+Per §23's reading rules: this reports direction and magnitude with `n = 5`, does
+not call the pattern significant, does not name any arm "the best augmentation"
+(the crop arm's +0.005 is within plausible single-seed noise), and treats the
+0A/0B relationship as association, not causation.
+
+### What this means for the research programme
+
+Consistent with the motivation in §2: **the frozen-model audit, on its own, is
+not yet a basis for selecting training augmentations.** A method that picked
+augmentations by preserving 0A `ΔM` would, on this evidence, have down-ranked
+Gaussian blur — the transformation that turned out to be one of the more
+usable training perturbations — while up-ranking rotation, which trained worse
+than three of the four other modified arms. This is exactly the scientifically
+valuable negative result flagged in §23 Outcome B, and per §29 the honest next
+step is diagnostic (is `ΔM` measured on the wrong model, at the wrong
+granularity, or simply not the right signal for augmentation usefulness) and
+methodological (repeat with several seeds per policy before drawing any firm
+conclusion from five single-seed points).
+
+Full artefacts: `outputs/experiment_0b/analysis/policy_summary.csv`,
+`joined_0a_0b_summary.csv`, `association_exploratory.csv`, and the six plots
+under `outputs/experiment_0b/analysis/plots/`.
+
+---
+
 ## Appendix A — Configuration structure
 
 `config/experiment_0b.yaml` is the only source of experiment configuration.
