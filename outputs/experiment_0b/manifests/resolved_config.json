@@ -1,0 +1,642 @@
+{
+  "experiment": "experiment_0b",
+  "created_at": "2026-08-26T05:09:32+00:00",
+  "master_seed": 42,
+  "device": "cuda",
+  "torch_version": "2.11.0+cu128",
+  "split": {
+    "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0a\\splits\\internal_split.json",
+    "fingerprint": "2c3a0390542d2a57",
+    "seed": 42,
+    "val_fraction": 0.1,
+    "stratified": true,
+    "num_train_declared": 5394,
+    "num_val_declared": 600,
+    "num_train_used": 5394,
+    "num_val_used": 600
+  },
+  "application_probability": 0.5,
+  "baseline_policy": "baseline",
+  "policies_declared": [
+    {
+      "name": "baseline",
+      "description": "Reference arm. The standard recipe only: RandomResizedCrop(0.7-1.0) + HorizontalFlip(p=0.5). No audited transformation is added.",
+      "audit_transform": null,
+      "seed": 1880975077,
+      "application_probability": 0.5,
+      "add": null,
+      "override": {},
+      "is_baseline": true
+    },
+    {
+      "name": "baseline_color_jitter",
+      "description": "Standard recipe plus Experiment 0A's colour jitter.",
+      "audit_transform": "color_jitter",
+      "seed": 503065231,
+      "application_probability": 0.5,
+      "add": {
+        "type": "color_jitter",
+        "params": {
+          "brightness": 0.4,
+          "contrast": 0.4,
+          "saturation": 0.4,
+          "hue": 0.1
+        }
+      },
+      "override": {},
+      "is_baseline": false
+    },
+    {
+      "name": "baseline_rotation",
+      "description": "Standard recipe plus Experiment 0A's in-plane rotation.",
+      "audit_transform": "rotation",
+      "seed": 69590260,
+      "application_probability": 0.5,
+      "add": {
+        "type": "rotation",
+        "params": {
+          "degrees": 15.0,
+          "interpolation": "bilinear",
+          "expand": false,
+          "fill": 0
+        }
+      },
+      "override": {},
+      "is_baseline": false
+    },
+    {
+      "name": "baseline_crop",
+      "description": "Standard recipe with Experiment 0A's stronger crop parameters substituted for the baseline crop parameters on a p fraction of images. The baseline already contains a RandomResizedCrop, so this arm changes crop STRENGTH rather than adding a second crop.",
+      "audit_transform": "random_resized_crop",
+      "seed": 1179721965,
+      "application_probability": 0.5,
+      "add": null,
+      "override": {
+        "random_resized_crop": {
+          "scale": [
+            0.5,
+            0.9
+          ],
+          "ratio": [
+            0.75,
+            1.3333
+          ],
+          "interpolation": "bilinear"
+        }
+      },
+      "is_baseline": false
+    },
+    {
+      "name": "baseline_gaussian_blur",
+      "description": "Standard recipe plus Experiment 0A's Gaussian blur.",
+      "audit_transform": "gaussian_blur",
+      "seed": 1659421884,
+      "application_probability": 0.5,
+      "add": {
+        "type": "gaussian_blur",
+        "params": {
+          "kernel_size": 9,
+          "sigma": [
+            1.0,
+            2.0
+          ]
+        }
+      },
+      "override": {},
+      "is_baseline": false
+    },
+    {
+      "name": "baseline_random_erasing",
+      "description": "Standard recipe plus Experiment 0A's random erasing.",
+      "audit_transform": "random_erasing",
+      "seed": 1505275385,
+      "application_probability": 0.5,
+      "add": {
+        "type": "random_erasing",
+        "params": {
+          "scale": [
+            0.05,
+            0.2
+          ],
+          "ratio": [
+            0.3,
+            3.3
+          ],
+          "value": 0.0
+        }
+      },
+      "override": {},
+      "is_baseline": false
+    }
+  ],
+  "policies_trained_this_run": [
+    "baseline",
+    "baseline_color_jitter",
+    "baseline_rotation",
+    "baseline_crop",
+    "baseline_gaussian_blur",
+    "baseline_random_erasing"
+  ],
+  "runs": [
+    {
+      "policy": "baseline",
+      "audit_transform": "",
+      "is_baseline": true,
+      "description": "Reference arm. The standard recipe only: RandomResizedCrop(0.7-1.0) + HorizontalFlip(p=0.5). No audited transformation is added.",
+      "seed": 1880975077,
+      "split_fingerprint": "2c3a0390542d2a57",
+      "num_train_images": 5394,
+      "num_val_images": 600,
+      "epochs": 20,
+      "batch_size": 32,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.05,
+      "scheduler": "cosine",
+      "architecture": "resnet18",
+      "pretrained_weights": "IMAGENET1K_V1",
+      "device": "cuda",
+      "application_probability": 0.5,
+      "best_epoch": 13,
+      "best_val_top1": 0.7816666666666666,
+      "best_val_top5": 0.93,
+      "best_val_loss": 0.9186668117841085,
+      "best_train_top1": 0.9996292176492398,
+      "best_train_top5": 1.0,
+      "best_train_loss": 0.014494494371693534,
+      "final_val_top1": 0.7716666666666666,
+      "final_val_top5": 0.9333333333333333,
+      "final_val_loss": 0.9111531432469686,
+      "final_train_top1": 1.0,
+      "final_train_top5": 1.0,
+      "final_train_loss": 0.009323980617808288,
+      "total_seconds": 378.148191200009,
+      "checkpoint_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline\\best.pt",
+      "history_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\logs\\history\\baseline.csv",
+      "completed_at": "2026-08-26T04:18:06+00:00"
+    },
+    {
+      "policy": "baseline_color_jitter",
+      "audit_transform": "color_jitter",
+      "is_baseline": false,
+      "description": "Standard recipe plus Experiment 0A's colour jitter.",
+      "seed": 503065231,
+      "split_fingerprint": "2c3a0390542d2a57",
+      "num_train_images": 5394,
+      "num_val_images": 600,
+      "epochs": 20,
+      "batch_size": 32,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.05,
+      "scheduler": "cosine",
+      "architecture": "resnet18",
+      "pretrained_weights": "IMAGENET1K_V1",
+      "device": "cuda",
+      "application_probability": 0.5,
+      "best_epoch": 15,
+      "best_val_top1": 0.7383333333333333,
+      "best_val_top5": 0.9183333333333333,
+      "best_val_loss": 1.0068655260403951,
+      "best_train_top1": 0.9996292176492398,
+      "best_train_top5": 1.0,
+      "best_train_loss": 0.0208443273183457,
+      "final_val_top1": 0.735,
+      "final_val_top5": 0.9266666666666666,
+      "final_val_loss": 0.9946829223632813,
+      "final_train_top1": 0.9998146088246199,
+      "final_train_top5": 1.0,
+      "final_train_loss": 0.016937040825729065,
+      "total_seconds": 429.4894994000133,
+      "checkpoint_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_color_jitter\\best.pt",
+      "history_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\logs\\history\\baseline_color_jitter.csv",
+      "completed_at": "2026-08-26T04:25:28+00:00"
+    },
+    {
+      "policy": "baseline_rotation",
+      "audit_transform": "rotation",
+      "is_baseline": false,
+      "description": "Standard recipe plus Experiment 0A's in-plane rotation.",
+      "seed": 69590260,
+      "split_fingerprint": "2c3a0390542d2a57",
+      "num_train_images": 5394,
+      "num_val_images": 600,
+      "epochs": 20,
+      "batch_size": 32,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.05,
+      "scheduler": "cosine",
+      "architecture": "resnet18",
+      "pretrained_weights": "IMAGENET1K_V1",
+      "device": "cuda",
+      "application_probability": 0.5,
+      "best_epoch": 14,
+      "best_val_top1": 0.76,
+      "best_val_top5": 0.9383333333333334,
+      "best_val_loss": 0.9709507409731547,
+      "best_train_top1": 0.9996292176492398,
+      "best_train_top5": 1.0,
+      "best_train_loss": 0.019722177907078628,
+      "final_val_top1": 0.7483333333333333,
+      "final_val_top5": 0.9316666666666666,
+      "final_val_loss": 0.9564133071899414,
+      "final_train_top1": 0.9998146088246199,
+      "final_train_top5": 1.0,
+      "final_train_loss": 0.013291406596799803,
+      "total_seconds": 582.556384600015,
+      "checkpoint_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_rotation\\best.pt",
+      "history_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\logs\\history\\baseline_rotation.csv",
+      "completed_at": "2026-08-26T04:35:21+00:00"
+    },
+    {
+      "policy": "baseline_crop",
+      "audit_transform": "random_resized_crop",
+      "is_baseline": false,
+      "description": "Standard recipe with Experiment 0A's stronger crop parameters substituted for the baseline crop parameters on a p fraction of images. The baseline already contains a RandomResizedCrop, so this arm changes crop STRENGTH rather than adding a second crop.",
+      "seed": 1179721965,
+      "split_fingerprint": "2c3a0390542d2a57",
+      "num_train_images": 5394,
+      "num_val_images": 600,
+      "epochs": 20,
+      "batch_size": 32,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.05,
+      "scheduler": "cosine",
+      "architecture": "resnet18",
+      "pretrained_weights": "IMAGENET1K_V1",
+      "device": "cuda",
+      "application_probability": 0.5,
+      "best_epoch": 18,
+      "best_val_top1": 0.7866666666666666,
+      "best_val_top5": 0.9416666666666667,
+      "best_val_loss": 0.8732846395174663,
+      "best_train_top1": 0.9981460882461994,
+      "best_train_top5": 0.9994438264738599,
+      "best_train_loss": 0.023944360928863432,
+      "final_val_top1": 0.7866666666666666,
+      "final_val_top5": 0.9416666666666667,
+      "final_val_loss": 0.8632128190994263,
+      "final_train_top1": 0.9990730441230997,
+      "final_train_top5": 0.9998146088246199,
+      "final_train_loss": 0.018708058540019716,
+      "total_seconds": 976.2093517000103,
+      "checkpoint_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_crop\\best.pt",
+      "history_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\logs\\history\\baseline_crop.csv",
+      "completed_at": "2026-08-26T04:51:48+00:00"
+    },
+    {
+      "policy": "baseline_gaussian_blur",
+      "audit_transform": "gaussian_blur",
+      "is_baseline": false,
+      "description": "Standard recipe plus Experiment 0A's Gaussian blur.",
+      "seed": 1659421884,
+      "split_fingerprint": "2c3a0390542d2a57",
+      "num_train_images": 5394,
+      "num_val_images": 600,
+      "epochs": 20,
+      "batch_size": 32,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.05,
+      "scheduler": "cosine",
+      "architecture": "resnet18",
+      "pretrained_weights": "IMAGENET1K_V1",
+      "device": "cuda",
+      "application_probability": 0.5,
+      "best_epoch": 18,
+      "best_val_top1": 0.77,
+      "best_val_top5": 0.9366666666666666,
+      "best_val_loss": 0.9637782629330953,
+      "best_train_top1": 0.9998146088246199,
+      "best_train_top5": 1.0,
+      "best_train_loss": 0.014923799048154761,
+      "final_val_top1": 0.76,
+      "final_val_top5": 0.935,
+      "final_val_loss": 0.9698186492919922,
+      "final_train_top1": 0.9998146088246199,
+      "final_train_top5": 1.0,
+      "final_train_loss": 0.014726591961921743,
+      "total_seconds": 624.5498251999888,
+      "checkpoint_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_gaussian_blur\\best.pt",
+      "history_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\logs\\history\\baseline_gaussian_blur.csv",
+      "completed_at": "2026-08-26T05:02:23+00:00"
+    },
+    {
+      "policy": "baseline_random_erasing",
+      "audit_transform": "random_erasing",
+      "is_baseline": false,
+      "description": "Standard recipe plus Experiment 0A's random erasing.",
+      "seed": 1505275385,
+      "split_fingerprint": "2c3a0390542d2a57",
+      "num_train_images": 5394,
+      "num_val_images": 600,
+      "epochs": 20,
+      "batch_size": 32,
+      "optimizer": "adamw",
+      "learning_rate": 0.0003,
+      "weight_decay": 0.05,
+      "scheduler": "cosine",
+      "architecture": "resnet18",
+      "pretrained_weights": "IMAGENET1K_V1",
+      "device": "cuda",
+      "application_probability": 0.5,
+      "best_epoch": 18,
+      "best_val_top1": 0.7583333333333333,
+      "best_val_top5": 0.9266666666666666,
+      "best_val_loss": 0.9803212157885234,
+      "best_train_top1": 0.9864664441972563,
+      "best_train_top5": 0.9983314794215795,
+      "best_train_loss": 0.08205234697782689,
+      "final_val_top1": 0.7566666666666667,
+      "final_val_top5": 0.9283333333333333,
+      "final_val_loss": 0.9791857624053955,
+      "final_train_top1": 0.989247311827957,
+      "final_train_top5": 0.9979606970708195,
+      "final_train_loss": 0.07740732097724079,
+      "total_seconds": 415.7738976999972,
+      "checkpoint_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_random_erasing\\best.pt",
+      "history_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\logs\\history\\baseline_random_erasing.csv",
+      "completed_at": "2026-08-26T05:09:30+00:00"
+    }
+  ],
+  "config": {
+    "experiment": {
+      "name": "experiment_0b",
+      "description": "Controlled augmentation-policy comparison: train one model per policy - the standard baseline recipe, and the same recipe plus exactly one audited transformation - then join the downstream validation outcome against Experiment 0A's per-transformation \u0394M summary."
+    },
+    "seed": {
+      "value": 42,
+      "deterministic_algorithms": false,
+      "cudnn_deterministic": true,
+      "cudnn_benchmark": false,
+      "seed_dataloader_workers": true
+    },
+    "dataset": {
+      "name": "cub_200_2011",
+      "root": "data/CUB_200_2011",
+      "images_dir": "images",
+      "metadata": {
+        "images": "images.txt",
+        "labels": "image_class_labels.txt",
+        "split": "train_test_split.txt",
+        "classes": "classes.txt"
+      },
+      "expected": {
+        "num_images": 11788,
+        "num_classes": 200,
+        "num_official_train": 5994,
+        "num_official_test": 5794
+      },
+      "validation": {
+        "check_image_paths": true,
+        "check_image_readable": false,
+        "strict_counts": true
+      }
+    },
+    "split": {
+      "val_fraction": 0.1,
+      "stratified": true,
+      "seed": null,
+      "path": "outputs/experiment_0a/splits/internal_split.json",
+      "overwrite": false
+    },
+    "model": {
+      "architecture": "resnet18",
+      "pretrained": true,
+      "weights": "IMAGENET1K_V1",
+      "num_classes": 200,
+      "feature_dim": null
+    },
+    "preprocess": {
+      "image_size": 224,
+      "resize_size": 256,
+      "interpolation": "bilinear",
+      "normalize": {
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ]
+      }
+    },
+    "train": {
+      "epochs": 20,
+      "batch_size": 32,
+      "eval_batch_size": 64,
+      "num_workers": 4,
+      "pin_memory": true,
+      "persistent_workers": true,
+      "prefetch_factor": 2,
+      "amp": {
+        "enabled": true,
+        "dtype": "float16"
+      },
+      "grad_clip_norm": null,
+      "optimizer": {
+        "name": "adamw",
+        "lr": 0.0003,
+        "weight_decay": 0.05,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "eps": 1e-08
+      },
+      "scheduler": {
+        "name": "cosine",
+        "warmup_epochs": 1,
+        "min_lr": 1e-06
+      },
+      "loss": {
+        "name": "cross_entropy",
+        "label_smoothing": 0.0
+      },
+      "augmentation": {
+        "random_resized_crop": {
+          "enabled": true,
+          "scale": [
+            0.7,
+            1.0
+          ],
+          "ratio": [
+            0.75,
+            1.3333
+          ]
+        },
+        "horizontal_flip": {
+          "enabled": true,
+          "p": 0.5
+        }
+      },
+      "max_train_images": null,
+      "max_val_images": null,
+      "checkpoint": {
+        "dir": "outputs/experiment_0b/checkpoints",
+        "last_name": "last.pt",
+        "best_name": "best.pt",
+        "monitor": "val_top1",
+        "mode": "max",
+        "save_optimizer_state": true,
+        "save_last": true
+      }
+    },
+    "policies": {
+      "application_probability": 0.5,
+      "baseline_name": "baseline",
+      "output": {
+        "history_dir": "outputs/experiment_0b/logs/history",
+        "runs_path": "outputs/experiment_0b/logs/train_runs.csv",
+        "manifest_path": "outputs/experiment_0b/manifests/resolved_config.json"
+      },
+      "list": [
+        {
+          "name": "baseline",
+          "description": "Reference arm. The standard recipe only: RandomResizedCrop(0.7-1.0) + HorizontalFlip(p=0.5). No audited transformation is added.",
+          "audit_transform": null
+        },
+        {
+          "name": "baseline_color_jitter",
+          "description": "Standard recipe plus Experiment 0A's colour jitter.",
+          "audit_transform": "color_jitter",
+          "add": {
+            "type": "color_jitter",
+            "params": {
+              "brightness": 0.4,
+              "contrast": 0.4,
+              "saturation": 0.4,
+              "hue": 0.1
+            }
+          }
+        },
+        {
+          "name": "baseline_rotation",
+          "description": "Standard recipe plus Experiment 0A's in-plane rotation.",
+          "audit_transform": "rotation",
+          "add": {
+            "type": "rotation",
+            "params": {
+              "degrees": 15.0,
+              "interpolation": "bilinear",
+              "expand": false,
+              "fill": 0
+            }
+          }
+        },
+        {
+          "name": "baseline_crop",
+          "description": "Standard recipe with Experiment 0A's stronger crop parameters substituted for the baseline crop parameters on a p fraction of images. The baseline already contains a RandomResizedCrop, so this arm changes crop STRENGTH rather than adding a second crop.",
+          "audit_transform": "random_resized_crop",
+          "override": {
+            "random_resized_crop": {
+              "scale": [
+                0.5,
+                0.9
+              ],
+              "ratio": [
+                0.75,
+                1.3333
+              ],
+              "interpolation": "bilinear"
+            }
+          }
+        },
+        {
+          "name": "baseline_gaussian_blur",
+          "description": "Standard recipe plus Experiment 0A's Gaussian blur.",
+          "audit_transform": "gaussian_blur",
+          "add": {
+            "type": "gaussian_blur",
+            "params": {
+              "kernel_size": 9,
+              "sigma": [
+                1.0,
+                2.0
+              ]
+            }
+          }
+        },
+        {
+          "name": "baseline_random_erasing",
+          "description": "Standard recipe plus Experiment 0A's random erasing.",
+          "audit_transform": "random_erasing",
+          "add": {
+            "type": "random_erasing",
+            "params": {
+              "scale": [
+                0.05,
+                0.2
+              ],
+              "ratio": [
+                0.3,
+                3.3
+              ],
+              "value": 0.0
+            }
+          }
+        }
+      ]
+    },
+    "analysis": {
+      "reference_0a": {
+        "summary_path": "outputs/experiment_0a/analysis/transformation_summary.csv"
+      },
+      "association": {
+        "enabled": true,
+        "x": "delta_margin_mean",
+        "y": [
+          "delta_best_val_top1_vs_baseline",
+          "best_val_top1"
+        ],
+        "methods": [
+          "pearson",
+          "spearman"
+        ]
+      },
+      "output": {
+        "dir": "outputs/experiment_0b/analysis",
+        "format": "csv",
+        "summary_name": "policy_summary",
+        "joined_name": "joined_0a_0b_summary",
+        "association_name": "association_exploratory"
+      },
+      "plots": {
+        "kinds": [
+          "validation_top1_by_policy",
+          "validation_top5_by_policy",
+          "validation_curves",
+          "training_curves",
+          "delta_margin_vs_accuracy_delta",
+          "delta_margin_vs_accuracy"
+        ],
+        "trend_line": true,
+        "dpi": 200,
+        "figsize": [
+          12,
+          6
+        ],
+        "file_format": "png",
+        "dir": "outputs/experiment_0b/analysis/plots"
+      }
+    },
+    "runtime": {
+      "device": "auto",
+      "require_device": false
+    },
+    "logging": {
+      "level": "INFO",
+      "dir": "outputs/experiment_0b/logs",
+      "file_template": "{stage}.log",
+      "to_file": true,
+      "to_console": true,
+      "format": "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s",
+      "date_format": "%Y-%m-%d %H:%M:%S"
+    }
+  }
+}
