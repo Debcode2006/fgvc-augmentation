@@ -1,5 +1,13 @@
-"""Baseline training for Experiment 0A."""
+"""Training: the shared trainer and Experiment 0B's augmentation policies."""
 
-from .trainer import BaselineTrainer, EpochMetrics
+from .policies import AugmentationPolicy, build_policies, select_policies
+from .trainer import BaselineTrainer, EpochMetrics, TrainingArtifacts
 
-__all__ = ["BaselineTrainer", "EpochMetrics"]
+__all__ = [
+    "AugmentationPolicy",
+    "BaselineTrainer",
+    "EpochMetrics",
+    "TrainingArtifacts",
+    "build_policies",
+    "select_policies",
+]
