@@ -136,9 +136,13 @@ class Config:
         return copy.deepcopy(self._data)
 
     def __contains__(self, dotted_key: object) -> bool:
+        # A distinct sentinel: passing _MISSING itself would read as "no default
+        # supplied" inside get(), which would raise on exactly the absent keys
+        # this is meant to report as False.
+        absent = object()
         if not isinstance(dotted_key, str):
             return False
-        return self.get(dotted_key, _MISSING) is not _MISSING
+        return self.get(dotted_key, absent) is not absent
 
     def __iter__(self) -> Iterator[str]:
         return iter(self._data)
