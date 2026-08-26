@@ -4,8 +4,10 @@
 # `python -m cicps train` (see README.md).
 outputs/**/checkpoints/
 
-# Smoke-test run: plumbing check only, numbers are meaningless (docs/experiment_0a.md §26).
+# Smoke-test runs: plumbing checks only, numbers are meaningless
+# (docs/experiment_0a.md §26, docs/experiment_0b.md §25).
 outputs/smoke_0a/
+outputs/smoke_0b/
 
 # The dataset is not tracked; see docs/experiment_0a.md for the expected layout.
 data/
