@@ -1,0 +1,372 @@
+# =============================================================================
+# Experiment 0B - Augmentation Policy Comparison (CUB-200-2011)
+#
+# THIS FILE IS THE SINGLE SOURCE OF TRUTH FOR THE EXPERIMENT.
+#
+# No experiment-defining value may be hard-coded in Python. Every path, size,
+# hyper-parameter, transformation strength, application probability and output
+# name lives here. Changing this file (or passing an override file) must be
+# sufficient to change the experiment without editing any source file.
+#
+# Experiment 0A established that different transformations produce heterogeneous
+# changes in fine-grained discriminative separation (ΔM) under a FROZEN model.
+# It deliberately did not establish that this matters for training.
+#
+# Experiment 0B asks exactly that:
+#
+#   "Does the transformation-specific discriminative damage measured by
+#    Experiment 0A have a measurable relationship with downstream usefulness
+#    when those transformations are used during model training?"
+#
+# It is a CONTROLLED POLICY COMPARISON. Six models are trained independently and
+# identically, differing only in the training augmentation policy and the RNG
+# stream. The Experiment 0A results are used AFTERWARDS, during analysis, to
+# join each policy to the transformation it added. ΔM is never a training
+# signal and never selects, ranks, weights or filters an augmentation.
+#
+# It does NOT implement DPGA, adaptive augmentation selection, learned
+# augmentation policies, margin-guided filtering or per-image selection.
+# =============================================================================
+
+experiment:
+  name: experiment_0b
+  description: >-
+    Controlled augmentation-policy comparison: train one model per policy - the
+    standard baseline recipe, and the same recipe plus exactly one audited
+    transformation - then join the downstream validation outcome against
+    Experiment 0A's per-transformation ΔM summary.
+
+# -----------------------------------------------------------------------------
+# Reproducibility
+#
+# The master seed drives everything. Each policy additionally receives its own
+# seed, derived as blake2b(master_seed, "policy", <policy name>) so that
+#
+#   * the same config + code + split + policy + seed reproduces a run;
+#   * every policy has an INDEPENDENT RNG stream, and adding or renaming a
+#     policy cannot silently perturb another policy's randomness.
+#
+# See src/cicps/seeding.py::derive_run_seed. The resolved seed is logged and
+# recorded in train_runs.csv and every checkpoint.
+# -----------------------------------------------------------------------------
+seed:
+  value: 42
+  deterministic_algorithms: false
+  cudnn_deterministic: true
+  cudnn_benchmark: false
+  seed_dataloader_workers: true
+
+# -----------------------------------------------------------------------------
+# Dataset - CUB-200-2011 (official layout, never rearranged)
+# -----------------------------------------------------------------------------
+dataset:
+  name: cub_200_2011
+  root: data/CUB_200_2011
+  images_dir: images
+  metadata:
+    images: images.txt
+    labels: image_class_labels.txt
+    split: train_test_split.txt
+    classes: classes.txt
+  expected:
+    num_images: 11788
+    num_classes: 200
+    num_official_train: 5994
+    num_official_test: 5794
+  validation:
+    check_image_paths: true
+    check_image_readable: false
+    strict_counts: true
+
+# -----------------------------------------------------------------------------
+# Internal train/validation split
+#
+# Experiment 0B reuses EXACTLY the split Experiment 0A used, by pointing at the
+# same manifest. Every policy therefore trains and validates on byte-identical
+# image sets, and the 0A audit and the 0B comparison speak about the same
+# validation images. The manifest is fingerprint-checked on load.
+#
+# The official CUB test portion stays locked. No stage of Experiment 0B loads it.
+# -----------------------------------------------------------------------------
+split:
+  val_fraction: 0.1
+  stratified: true
+  seed: null
+  path: outputs/experiment_0a/splits/internal_split.json
+  overwrite: false
+
+# -----------------------------------------------------------------------------
+# Model - identical for every policy
+#
+# Every policy starts from the SAME ImageNet-pretrained initialisation and is
+# trained independently. No policy inherits weights from another.
+# -----------------------------------------------------------------------------
+model:
+  architecture: resnet18
+  pretrained: true
+  weights: IMAGENET1K_V1
+  num_classes: 200
+  feature_dim: null
+
+# -----------------------------------------------------------------------------
+# Image preprocessing - identical for every policy
+#
+# Validation preprocessing is the deterministic canonical view (resize -> centre
+# crop -> normalise). It is never touched by a policy: a policy only changes what
+# happens during TRAINING.
+# -----------------------------------------------------------------------------
+preprocess:
+  image_size: 224
+  resize_size: 256
+  interpolation: bilinear
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+# -----------------------------------------------------------------------------
+# Training - identical for every policy
+#
+# These values are copied from config/experiment_0a.yaml unchanged. Nothing here
+# is tuned per policy: no policy gets more epochs, a different learning rate, a
+# different architecture or a different checkpoint rule. That is the whole point
+# of the comparison.
+# -----------------------------------------------------------------------------
+train:
+  epochs: 20
+  batch_size: 32
+  eval_batch_size: 64
+  num_workers: 4
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+  amp:
+    enabled: true
+    dtype: float16
+  grad_clip_norm: null
+  optimizer:
+    name: adamw
+    lr: 3.0e-4
+    weight_decay: 0.05
+    betas: [0.9, 0.999]
+    eps: 1.0e-8
+  scheduler:
+    name: cosine
+    warmup_epochs: 1
+    min_lr: 1.0e-6
+  loss:
+    name: cross_entropy
+    label_smoothing: 0.0
+
+  # THE STANDARD BASELINE AUGMENTATION RECIPE.
+  #
+  # Identical to Experiment 0A's training recipe. Every 0B policy contains this
+  # recipe; a policy differs from `baseline` by exactly one modification applied
+  # on top of it. Horizontal flip therefore needs no policy of its own - it is
+  # already here.
+  augmentation:
+    random_resized_crop:
+      enabled: true
+      scale: [0.7, 1.0]
+      ratio: [0.75, 1.3333]
+    horizontal_flip:
+      enabled: true
+      p: 0.5
+
+  # Cap the number of internal train/validation images. `null` = use the whole
+  # internal split, which is required for a scientific run. The smoke override
+  # sets these; the subset is drawn from the MASTER seed, never a policy seed,
+  # so every policy sees exactly the same images.
+  max_train_images: null
+  max_val_images: null
+
+  checkpoint:
+    # One sub-directory per policy is appended: <dir>/<policy name>/.
+    dir: outputs/experiment_0b/checkpoints
+    last_name: last.pt
+    best_name: best.pt
+    # Checkpoint selection: best internal-validation top-1, for every policy.
+    # Never the official test set, and never a downstream 0A quantity.
+    monitor: val_top1
+    mode: max
+    save_optimizer_state: true
+    save_last: true
+
+# -----------------------------------------------------------------------------
+# THE POLICY SWEEP
+#
+# `baseline` is the reference arm: the standard recipe above, unmodified.
+#
+# Every other arm adds EXACTLY ONE audited transformation to that same recipe,
+# with the SAME application probability. Two mechanisms exist:
+#
+#   add       append a transformation the baseline does not contain, taken with
+#             probability `application_probability`.
+#
+#   override  re-parameterise a stage the baseline ALREADY contains, taken with
+#             probability `application_probability`. Used only by the crop arm:
+#             the baseline already crops, so stacking a second independent crop
+#             would confound "0A crop strength" with "two crops in a row". The
+#             controlled intervention is to substitute the 0A crop parameters.
+#
+# `audit_transform` names the Experiment 0A transformation each arm corresponds
+# to. It is used ONLY to join the results during analysis - never to build the
+# policy, and never to decide which policies exist.
+#
+# The transformation set was fixed BEFORE the 0A results were consulted and must
+# not be edited in response to them: no arm may be dropped for looking
+# destructive, none added for looking interesting, and no strength retuned after
+# seeing a downstream number.
+# -----------------------------------------------------------------------------
+policies:
+  # Probability with which a policy's single modification is applied to a
+  # training image.
+  #
+  # Why 0.5, and why one shared value:
+  #   * Experiment 0A applied its transformations deterministically because it
+  #     was probing a frozen model; as a TRAINING augmentation a transformation
+  #     needs an explicit application probability, and the baseline recipe this
+  #     repository already uses states its own probability as 0.5
+  #     (train.augmentation.horizontal_flip.p), so 0.5 is the existing
+  #     convention rather than a new tuning knob.
+  #   * At p = 0.5 each arm is an even mixture of "baseline" and "baseline plus
+  #     the audited transformation", so an arm can neither collapse onto the
+  #     baseline (p = 0) nor stop being a controlled increment on it (p = 1).
+  #   * It is IDENTICAL across all arms, deliberately. Tuning it per policy
+  #     would confound transformation identity with augmentation dosage, which
+  #     is exactly the confound this experiment must avoid.
+  application_probability: 0.5
+
+  # The reference arm every other policy is compared against.
+  baseline_name: baseline
+
+  output:
+    history_dir: outputs/experiment_0b/logs/history
+    runs_path: outputs/experiment_0b/logs/train_runs.csv
+    manifest_path: outputs/experiment_0b/manifests/resolved_config.json
+
+  list:
+    - name: baseline
+      description: >-
+        Reference arm. The standard recipe only: RandomResizedCrop(0.7-1.0) +
+        HorizontalFlip(p=0.5). No audited transformation is added.
+      audit_transform: null
+
+    - name: baseline_color_jitter
+      description: Standard recipe plus Experiment 0A's colour jitter.
+      audit_transform: color_jitter
+      add:
+        type: color_jitter
+        params:
+          brightness: 0.4
+          contrast: 0.4
+          saturation: 0.4
+          hue: 0.1
+
+    - name: baseline_rotation
+      description: Standard recipe plus Experiment 0A's in-plane rotation.
+      audit_transform: rotation
+      add:
+        type: rotation
+        params:
+          degrees: 15.0
+          interpolation: bilinear
+          expand: false
+          fill: 0
+
+    - name: baseline_crop
+      description: >-
+        Standard recipe with Experiment 0A's stronger crop parameters
+        substituted for the baseline crop parameters on a p fraction of images.
+        The baseline already contains a RandomResizedCrop, so this arm changes
+        crop STRENGTH rather than adding a second crop.
+      audit_transform: random_resized_crop
+      override:
+        random_resized_crop:
+          scale: [0.5, 0.9]
+          ratio: [0.75, 1.3333]
+          interpolation: bilinear
+
+    - name: baseline_gaussian_blur
+      description: Standard recipe plus Experiment 0A's Gaussian blur.
+      audit_transform: gaussian_blur
+      add:
+        type: gaussian_blur
+        params:
+          kernel_size: 9
+          sigma: [1.0, 2.0]
+
+    - name: baseline_random_erasing
+      description: Standard recipe plus Experiment 0A's random erasing.
+      audit_transform: random_erasing
+      add:
+        type: random_erasing
+        params:
+          scale: [0.05, 0.2]
+          ratio: [0.3, 3.3]
+          # Erase value in NORMALISED tensor space. 0.0 == the ImageNet mean colour.
+          value: 0.0
+
+# -----------------------------------------------------------------------------
+# Analysis
+# -----------------------------------------------------------------------------
+analysis:
+  # Experiment 0A's per-transformation summary, read ONLY for the join.
+  # Experiment 0B never writes to outputs/experiment_0a/.
+  reference_0a:
+    summary_path: outputs/experiment_0a/analysis/transformation_summary.csv
+
+  # Exploratory association between 0A margin damage and 0B outcome.
+  #
+  # There are five transformation points. These coefficients are DESCRIPTIVE
+  # ONLY: no p-value is computed, no significance test is run, and the sample
+  # count is written onto every row so that no reader mistakes a coefficient
+  # over five points for evidence.
+  association:
+    enabled: true
+    x: delta_margin_mean
+    y: [delta_best_val_top1_vs_baseline, best_val_top1]
+    methods: [pearson, spearman]
+
+  output:
+    dir: outputs/experiment_0b/analysis
+    format: csv
+    summary_name: policy_summary
+    joined_name: joined_0a_0b_summary
+    association_name: association_exploratory
+
+  plots:
+    # Any subset of: validation_top1_by_policy, validation_top5_by_policy,
+    # validation_curves, training_curves, delta_margin_vs_accuracy_delta,
+    # delta_margin_vs_accuracy.
+    kinds:
+      - validation_top1_by_policy
+      - validation_top5_by_policy
+      - validation_curves
+      - training_curves
+      - delta_margin_vs_accuracy_delta
+      - delta_margin_vs_accuracy
+    # Least-squares line on the 0A-vs-0B scatter plots. A visual aid over a
+    # handful of points, not evidence; the figures say so on their own faces.
+    trend_line: true
+    dpi: 200
+    figsize: [12, 6]
+    file_format: png
+    dir: outputs/experiment_0b/analysis/plots
+
+# -----------------------------------------------------------------------------
+# Runtime
+# -----------------------------------------------------------------------------
+runtime:
+  device: auto
+  require_device: false
+
+logging:
+  level: INFO
+  dir: outputs/experiment_0b/logs
+  # {stage} is substituted with prepare/train/analyze, and with train_<policy>
+  # for the per-policy training logs.
+  file_template: "{stage}.log"
+  to_file: true
+  to_console: true
+  format: "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
