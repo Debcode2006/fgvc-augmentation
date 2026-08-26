@@ -1,0 +1,63 @@
+# =============================================================================
+# Smoke-test override for Experiment 0B.
+#
+# Deep-merged over config/experiment_0b.yaml to exercise the ENTIRE 0B pipeline
+# end to end - configuration loading, split loading and validation, policy
+# construction, dataset construction, training, validation, checkpointing,
+# history generation, Experiment 0A result loading, the joined analysis, every
+# required plot and the summary CSVs - on a tiny workload:
+#
+#   python -m cicps prepare --config config/experiment_0b.yaml --override config/smoke_0b.yaml
+#   python -m cicps train   --config config/experiment_0b.yaml --override config/smoke_0b.yaml
+#   python -m cicps analyze --config config/experiment_0b.yaml --override config/smoke_0b.yaml
+#   python scripts/check_smoke_0b.py --config config/experiment_0b.yaml --override config/smoke_0b.yaml
+#
+# It writes everything to outputs/smoke_0b/ so it can never clobber a scientific
+# run, and it reuses the SAME internal split manifest so the smoke run and the
+# real run agree about which images are validation images.
+#
+# THIS IS NOT A SCIENTIFIC RUN. Two epochs on a few hundred images produce a
+# near-random model; the numbers it emits are meaningless, the differences
+# between policies are noise, and neither may ever be reported. It exists only
+# to prove the plumbing works.
+#
+# The full 0B policy set is still trained: the smoke test must exercise every
+# arm, because "does policy construction work for every policy" is one of the
+# things it is checking.
+# =============================================================================
+
+experiment:
+  name: experiment_0b_smoke
+
+train:
+  epochs: 2
+  # With 2 epochs there is still room for the 1 warmup epoch (warmup < epochs).
+  batch_size: 16
+  eval_batch_size: 32
+  num_workers: 0
+  persistent_workers: false
+  # Tiny subset of the internal split. Identical across policies: the subset is
+  # drawn from the master seed, never a policy seed.
+  max_train_images: 240
+  max_val_images: 120
+  checkpoint:
+    dir: outputs/smoke_0b/checkpoints
+
+policies:
+  output:
+    history_dir: outputs/smoke_0b/logs/history
+    runs_path: outputs/smoke_0b/logs/train_runs.csv
+    manifest_path: outputs/smoke_0b/manifests/resolved_config.json
+
+analysis:
+  # Still the real Experiment 0A summary: loading it is part of what the smoke
+  # test checks. It is opened read-only and never written.
+  reference_0a:
+    summary_path: outputs/experiment_0a/analysis/transformation_summary.csv
+  output:
+    dir: outputs/smoke_0b/analysis
+  plots:
+    dir: outputs/smoke_0b/analysis/plots
+
+logging:
+  dir: outputs/smoke_0b/logs
