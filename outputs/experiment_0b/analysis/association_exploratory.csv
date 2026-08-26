@@ -1,0 +1,5 @@
+x,y,method,n_points,coefficient,interpretation
+delta_margin_mean,delta_best_val_top1_vs_baseline,pearson,5,0.20003613,exploratory / descriptive only; no significance test
+delta_margin_mean,delta_best_val_top1_vs_baseline,spearman,5,0.2,exploratory / descriptive only; no significance test
+delta_margin_mean,best_val_top1,pearson,5,0.20003613,exploratory / descriptive only; no significance test
+delta_margin_mean,best_val_top1,spearman,5,0.2,exploratory / descriptive only; no significance test
