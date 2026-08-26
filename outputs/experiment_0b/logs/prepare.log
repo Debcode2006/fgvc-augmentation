@@ -1,0 +1,23 @@
+2026-08-26 09:41:16 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0b\logs\prepare.log
+2026-08-26 09:41:16 | INFO    | cicps.prepare | Configuration: D:\Projects\cicps-augmentation\config\experiment_0b.yaml
+2026-08-26 09:41:16 | INFO    | cicps.prepare | Experiment: experiment_0b
+2026-08-26 09:41:16 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-08-26 09:41:16 | INFO    | cicps.prepare | Dataset validation:
+2026-08-26 09:41:17 | INFO    | cicps.validation |   cub_root                           D:\Projects\cicps-augmentation\data\CUB_200_2011
+2026-08-26 09:41:17 | INFO    | cicps.validation |   images_total                       11788
+2026-08-26 09:41:17 | INFO    | cicps.validation |   classes_total                      200
+2026-08-26 09:41:17 | INFO    | cicps.validation |   official_train_images              5994
+2026-08-26 09:41:17 | INFO    | cicps.validation |   official_test_images (locked)      5794
+2026-08-26 09:41:17 | INFO    | cicps.validation |   official_train_per_class_min       29
+2026-08-26 09:41:17 | INFO    | cicps.validation |   official_train_per_class_max       30
+2026-08-26 09:41:17 | INFO    | cicps.validation |   missing_image_files                0
+2026-08-26 09:41:17 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-08-26 09:41:17 | INFO    | cicps.prepare | Split validation:
+2026-08-26 09:41:17 | INFO    | cicps.validation |   internal_train_images              5394
+2026-08-26 09:41:17 | INFO    | cicps.validation |   internal_val_images                600
+2026-08-26 09:41:17 | INFO    | cicps.validation |   split_seed                         42
+2026-08-26 09:41:17 | INFO    | cicps.validation |   split_val_fraction                 0.1
+2026-08-26 09:41:17 | INFO    | cicps.validation |   split_stratified                   True
+2026-08-26 09:41:17 | INFO    | cicps.validation |   classes_in_internal_val            200
+2026-08-26 09:41:17 | INFO    | cicps.validation |   internal_val_fraction_achieved     0.1001
+2026-08-26 09:41:17 | INFO    | cicps.prepare | Dataset and split are valid. Official test portion (5794 images) was not used.
