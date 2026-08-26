@@ -25,7 +25,14 @@ import torch
 
 from .config import Config
 
-__all__ = ["seed_everything", "derive_seed", "worker_init_fn", "dataloader_generator"]
+__all__ = [
+    "seed_everything",
+    "derive_seed",
+    "derive_run_seed",
+    "seed_run",
+    "worker_init_fn",
+    "dataloader_generator",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +85,38 @@ def derive_seed(*parts: Any) -> int:
     payload = "\x1f".join(str(part) for part in parts).encode("utf-8")
     digest = hashlib.blake2b(payload, digest_size=8).digest()
     return int.from_bytes(digest, "big") % _UINT64
+
+
+def derive_run_seed(master_seed: int, *parts: Any) -> int:
+    """Derive an independent, reproducible run seed from the master seed.
+
+    Used by Experiment 0B to give every augmentation policy its own RNG stream:
+    ``derive_run_seed(seed.value, "policy", "baseline_rotation")``. Because it is
+    built on :func:`derive_seed` (BLAKE2b, not Python's salted ``hash``), the
+    same master seed and the same policy name always yield the same run seed -
+    and adding or renaming a policy cannot perturb another policy's stream.
+
+    The result is clamped to a 31-bit range so it is accepted unchanged by
+    NumPy, Python and torch alike.
+    """
+    return derive_seed(int(master_seed), *parts) % _INT32
+
+
+def seed_run(seed: int) -> int:
+    """Re-seed Python, NumPy, torch and CUDA for one run inside a process.
+
+    Complements :func:`seed_everything`, which additionally installs the global
+    cudnn/determinism flags. Those flags are process-wide and are deliberately
+    *not* touched here: a policy sweep sets them once and then re-seeds per
+    policy, so the only thing that varies between policies is the RNG stream.
+    """
+    seed = int(seed)
+    random.seed(seed)
+    np.random.seed(seed % _INT32)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    logger.info("Re-seeded RNGs for this run with seed %d.", seed)
+    return seed
 
 
 def worker_init_fn(worker_id: int) -> None:
