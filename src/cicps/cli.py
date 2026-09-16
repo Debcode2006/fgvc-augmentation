@@ -19,10 +19,17 @@ Experiment 0B - the controlled downstream training comparison::
     python -m cicps train    --config config/experiment_0b.yaml
     python -m cicps analyze  --config config/experiment_0b.yaml
 
+Experiment 1A - the gradient-compatibility measurement::
+
+    python -m cicps gradients --config config/experiment_1a.yaml
+    python -m cicps analyze   --config config/experiment_1a.yaml
+
 The commands are identical; the configuration decides what they do. A file that
 declares a ``policies`` section is a 0B policy sweep, so ``train`` trains one
-model per policy and ``analyze`` joins the sweep against Experiment 0A's summary.
-There is no experiment-selecting command-line flag, because that would be an
+model per policy and ``analyze`` joins the sweep against Experiment 0A's summary;
+a file that declares a ``gradients`` section is an Experiment 1A run, so
+``analyze`` summarises the gradient records instead. There is no
+experiment-selecting command-line flag, because that would be an
 experiment-defining value living outside the YAML file.
 """
 
@@ -36,25 +43,35 @@ from typing import Sequence
 from .config import Config, ConfigError, load_config, project_root
 from .stages import (
     run_analyze,
+    run_analyze_gradients,
     run_analyze_policies,
     run_audit,
+    run_gradients,
     run_prepare,
     run_train,
     run_train_policies,
     run_verify_transforms,
 )
 
-__all__ = ["main", "build_parser", "is_policy_experiment"]
+__all__ = ["main", "build_parser", "is_policy_experiment", "is_gradient_experiment"]
 
 DEFAULT_CONFIG = "config/experiment_0a.yaml"
 
 POLICY_SECTION = "policies"
 """Presence of this configuration section marks a run as an Experiment 0B sweep."""
 
+GRADIENT_SECTION = "gradients"
+"""Presence of this configuration section marks a run as an Experiment 1A measurement."""
+
 
 def is_policy_experiment(config: Config) -> bool:
     """True when the configuration declares an Experiment 0B policy sweep."""
     return POLICY_SECTION in config
+
+
+def is_gradient_experiment(config: Config) -> bool:
+    """True when the configuration declares an Experiment 1A gradient measurement."""
+    return GRADIENT_SECTION in config
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -113,6 +130,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Override audit.checkpoint for this run only.",
     )
 
+    gradients = add_common(subparsers.add_parser(
+        "gradients",
+        help="Experiment 1A: measure paired clean/transformed gradients across frozen "
+             "checkpoints.",
+    ))
+    gradients.add_argument(
+        "--stage", action="append", default=[], metavar="NAME",
+        help="Experiment 1A only: measure just this declared checkpoint stage. Repeatable. "
+             "This is an execution-scope flag for re-runs; it cannot define a stage, only "
+             "select one already declared in the configuration.",
+    )
+
     analyze = add_common(subparsers.add_parser(
         "analyze",
         help="Summarise the audit dataframe and plot delta-margin (0A), or summarise the "
@@ -145,8 +174,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                 run_train(config)
         elif args.command == "audit":
             run_audit(config, checkpoint_path=_resolve(config, args.checkpoint))
+        elif args.command == "gradients":
+            if not is_gradient_experiment(config):
+                parser.error(
+                    "This configuration declares no 'gradients' section, so there is no "
+                    "Experiment 1A measurement to run. Use config/experiment_1a.yaml."
+                )
+            run_gradients(config, stage_names=list(args.stage))
         elif args.command == "analyze":
-            if is_policy_experiment(config):
+            if is_gradient_experiment(config):
+                if args.records is not None:
+                    parser.error(
+                        "--records applies to the Experiment 0A audit dataframe; this "
+                        "configuration declares a 'gradients' section (Experiment 1A)."
+                    )
+                run_analyze_gradients(config)
+            elif is_policy_experiment(config):
                 if args.records is not None:
                     parser.error(
                         "--records applies to the Experiment 0A audit dataframe; this "
