@@ -1,0 +1,55 @@
+# =============================================================================
+# Experiment 1A - fast end-to-end plumbing check.
+#
+# Deep-merged OVER config/experiment_1a.yaml:
+#
+#   python -m cicps gradients --config config/experiment_1a.yaml --override config/smoke_1a.yaml
+#   python -m cicps analyze   --config config/experiment_1a.yaml --override config/smoke_1a.yaml
+#   python scripts/check_experiment_1a.py --config config/experiment_1a.yaml --override config/smoke_1a.yaml
+#
+# It exercises configuration loading, split validation, checkpoint stage
+# resolution (including the reconstructed init), the paired dataset, the
+# per-sample gradient measurement, the scope accumulation, the null control,
+# every summary, both joins and all figures - on a handful of images.
+#
+# THE SMOKE RUN IS NOT A SCIENTIFIC RUN. Twelve images cannot estimate a
+# distribution; its numbers are meaningless and must never be reported. Outputs
+# go to outputs/smoke_1a/ and never touch the scientific artefacts.
+# =============================================================================
+
+experiment:
+  name: smoke_1a
+
+gradients:
+  max_images: 12
+  batch_size: 4
+  num_workers: 0
+  progress: false
+  # Only the two stages that need no Experiment 0B artefact plus the 0B
+  # baseline; the five adaptation probes are dropped to keep the check fast.
+  checkpoints:
+    - name: init
+      kind: init
+      description: Epoch 0, reconstructed under the master seed.
+    - name: experiment_0a_best
+      kind: file
+      path: outputs/experiment_0a/checkpoints/baseline_best.pt
+      description: The model Experiment 0A audited (anchor stage).
+    - name: 0b_baseline_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline/best.pt
+      policy: baseline
+      description: Experiment 0B's reference arm.
+  output:
+    dir: outputs/smoke_1a/gradients
+
+analysis:
+  bootstrap:
+    resamples: 200
+  output:
+    dir: outputs/smoke_1a/analysis
+  plots:
+    dir: outputs/smoke_1a/analysis/plots
+
+logging:
+  dir: outputs/smoke_1a/logs
