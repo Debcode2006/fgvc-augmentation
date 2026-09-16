@@ -14,6 +14,8 @@ Programme question:
 | --- | --- |
 | **Experiment 0A — transformation audit** | ✅ implemented |
 | **Experiment 0B — augmentation policies vs. downstream usefulness** | ✅ implemented |
+| **Experiment 1A — gradient compatibility analysis** | ✅ implemented |
+| Experiment 1B — representation + learning-signal evolution | ❌ not implemented |
 | DPGA — Discriminative-Preservation-Guided Augmentation | ❌ not implemented |
 
 **Experiment 0A** is a falsification / mechanism test. It freezes one ordinary
@@ -45,6 +47,23 @@ The 0A summary is then joined against the downstream results — **afterwards, f
 analysis only**. `ΔM` is never a training signal and never selects an
 augmentation. 0B is *not* DPGA. Full details:
 **[`docs/experiment_0b.md`](docs/experiment_0b.md)**.
+
+**Experiment 1A** is a diagnostic on the *same frozen checkpoints*. 0B returned a
+null — frozen-model margin damage did not predict downstream usefulness — so 1A
+asks what a different view of those checkpoints shows: not what a transformation
+does to the model's **answer**, but what it does to the model's **learning
+signal**. For each image it compares the parameter gradient of the clean view
+against that of its transformed counterpart:
+
+$$C_g = \frac{\langle g_x,\, g_T \rangle}{\lVert g_x \rVert \, \lVert g_T \rVert},
+\qquad R_g = \frac{\lVert g_T \rVert}{\lVert g_x \rVert}$$
+
+No model is trained and no checkpoint is modified: gradients are taken *with
+respect to* the parameters, but no optimizer exists and every stage's full state
+is fingerprinted before and after to prove it. Two controls make a cosine in
+11.2 M dimensions readable — `identity` fixes the top of the scale at exactly
+1.0, and a cross-image null fixes what *unrelated* learning signals score. Full
+details: **[`docs/experiment_1a.md`](docs/experiment_1a.md)**.
 
 ## Setup
 
@@ -107,6 +126,35 @@ python -m cicps analyze --config config/experiment_0b.yaml --override config/smo
 python scripts/check_smoke_0b.py --config config/experiment_0b.yaml --override config/smoke_0b.yaml
 ```
 
+## Running Experiment 1A
+
+Requires Experiment 0A's `audit` and Experiment 0B's `train` to have been run:
+1A loads their checkpoints and joins their result tables, all read-only.
+
+```bash
+python -m cicps gradients --config config/experiment_1a.yaml   # the measurement
+python -m cicps analyze   --config config/experiment_1a.yaml   # summaries, joins, figures
+python scripts/check_experiment_1a.py --config config/experiment_1a.yaml
+```
+
+Re-run a single checkpoint stage without disturbing the others:
+
+```bash
+python -m cicps gradients --config config/experiment_1a.yaml --stage 0b_baseline_best
+```
+
+Fast end-to-end plumbing check (12 images, 3 stages; writes to `outputs/smoke_1a/`,
+not a scientific run):
+
+```bash
+python -m cicps gradients --config config/experiment_1a.yaml --override config/smoke_1a.yaml
+python -m cicps analyze   --config config/experiment_1a.yaml --override config/smoke_1a.yaml
+python scripts/check_experiment_1a.py --config config/experiment_1a.yaml --override config/smoke_1a.yaml
+```
+
+As with 0B, the **configuration** decides what the shared commands do: a config
+declaring a `gradients` section is an Experiment 1A run.
+
 ## Ground rules
 
 * **`config/experiment_0a.yaml` is the single source of truth.** No experiment
@@ -130,14 +178,19 @@ python scripts/check_smoke_0b.py --config config/experiment_0b.yaml --override c
 * **`ΔM` is never a training signal.** 0B joins the 0A summary to its own
   results during analysis only. Nothing selects, ranks, weights or filters an
   augmentation by anything measured.
+* **1A measures, it does not rank.** Gradient alignment is evidence about
+  learning-signal compatibility, not proof that an augmentation is good — a high
+  cosine reads as "redundant" as easily as "safe". 1A trains nothing, modifies no
+  checkpoint, and writes nothing into `outputs/experiment_0a/` or
+  `outputs/experiment_0b/`.
 
 ## Layout
 
 ```
-config/      experiment + smoke-override YAML (0A and 0B)
+config/      experiment + smoke-override YAML (0A, 0B, 1A)
 data/        CUB-200-2011, as distributed
-docs/        experiment handbooks (0A, 0B)
+docs/        experiment handbooks (0A, 0B, 1A)
 outputs/     generated: splits, checkpoints, logs, dataframes, manifests, plots
 scripts/     invariant checks for a completed run
-src/cicps/   config · seeding · data · models · transforms · training · audit · analysis · stages
+src/cicps/   config · seeding · data · models · transforms · training · audit · gradients · analysis · stages
 ```
