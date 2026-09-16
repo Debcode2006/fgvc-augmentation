@@ -16,11 +16,20 @@ so the command line stays identical between the two experiments:
 
 ``train_policies``    train one model per declared augmentation policy
 ``analyze_policies``  summarise the sweep and join it against Experiment 0A
+
+Experiment 1A adds a measurement stage of its own. A config that declares a
+``gradients`` section is a 1A run, so ``analyze`` dispatches to its analysis just
+as a ``policies`` section selects 0B's:
+
+``gradients``         measure paired clean/transformed gradients across checkpoints
+``analyze_gradients`` summarise them and join against Experiments 0A and 0B
 """
 
 from .analyze import run_analyze
+from .analyze_gradients import run_analyze_gradients
 from .analyze_policies import run_analyze_policies
 from .audit import run_audit
+from .gradients import run_gradients
 from .prepare import run_prepare
 from .train import run_train
 from .train_policies import run_train_policies
@@ -28,8 +37,10 @@ from .verify import run_verify_transforms
 
 __all__ = [
     "run_analyze",
+    "run_analyze_gradients",
     "run_analyze_policies",
     "run_audit",
+    "run_gradients",
     "run_prepare",
     "run_train",
     "run_train_policies",
