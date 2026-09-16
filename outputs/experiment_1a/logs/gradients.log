@@ -1,0 +1,173 @@
+2026-09-15 22:28:05 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_1a\logs\gradients.log
+2026-09-15 22:28:05 | INFO    | cicps.gradients | Configuration: D:\Projects\cicps-augmentation\config\experiment_1a.yaml
+2026-09-15 22:28:05 | INFO    | cicps.gradients | Experiment: experiment_1a
+2026-09-15 22:28:05 | INFO    | cicps.seeding | Seeded RNGs with master seed 42 (cudnn.deterministic=True, cudnn.benchmark=False, deterministic_algorithms=False)
+2026-09-15 22:28:05 | INFO    | cicps.gradients | Precision: float32, autocast disabled, TF32 allowed = False.
+2026-09-15 22:28:05 | INFO    | cicps.device | Device: cuda (NVIDIA GeForce RTX 3050 Laptop GPU, 4.0 GB)
+2026-09-15 22:28:05 | INFO    | cicps.cub | Loaded CUB metadata from D:\Projects\cicps-augmentation\data\CUB_200_2011: 11788 images, 200 classes, 5994 official train, 5794 official test (locked).
+2026-09-15 22:28:05 | INFO    | cicps.splits | Loaded internal split from D:\Projects\cicps-augmentation\outputs\experiment_0a\splits\internal_split.json: 5394 train / 600 val (seed=42).
+2026-09-15 22:28:05 | INFO    | cicps.gradients | Internal split 2c3a0390542d2a57: 5394 train / 600 val images; official test portion locked (5794 images untouched).
+2026-09-15 22:28:05 | INFO    | cicps.gradients | Measuring 9 checkpoint stage(s): init, experiment_0a_best, 0b_baseline_best, 0b_baseline_last, 0b_color_jitter_best, 0b_rotation_best, 0b_crop_best, 0b_gaussian_blur_best, 0b_random_erasing_best
+2026-09-15 22:28:05 | INFO    | cicps.gradients | Transformation suite (7): identity, horizontal_flip, color_jitter, rotation, random_resized_crop, gaussian_blur, random_erasing
+2026-09-15 22:28:05 | INFO    | cicps.engine | Image traversal order permuted with seed 570715080 (for the cross-image null control); the paired clean/transformed measurement is unaffected.
+2026-09-15 22:28:05 | INFO    | cicps.engine | Experiment 1A: 600 image(s) x 9 stage(s), 1 realisation(s) per transformation.
+2026-09-15 22:28:05 | INFO    | cicps.engine | === stage 1/9: init === Epoch 0. ImageNet-pretrained backbone with a freshly drawn head, reconstructed under the master seed - the same two-step seeding Experiment 0B performs before training each arm, and verified to rebuild bit-identically. No such checkpoint was ever written to disk.
+2026-09-15 22:28:05 | INFO    | cicps.checkpoints | Stage 'init': reconstructing the epoch-0 initialisation under master seed 42 (the same two-step seeding Experiment 0B used before training each arm).
+2026-09-15 22:28:05 | INFO    | cicps.seeding | Re-seeded RNGs for this run with seed 42.
+2026-09-15 22:28:05 | INFO    | cicps.factory | Built resnet18 (pretrained=True, weights=IMAGENET1K_V1, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:28:06 | INFO    | cicps.engine | Stage 'init': measuring 7 transformation(s): identity, horizontal_flip, color_jitter, rotation, random_resized_crop, gaussian_blur, random_erasing
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 5.5722
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           horizontal_flip        mean Cg +0.6716 | median Cg +0.6733 | mean Rg 1.0027 | mean dM +0.00222 | mean clean loss 5.5722
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           color_jitter           mean Cg +0.8091 | median Cg +0.8160 | mean Rg 1.0326 | mean dM +0.00156 | mean clean loss 5.5722
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           rotation               mean Cg +0.7386 | median Cg +0.7361 | mean Rg 1.0263 | mean dM +0.00250 | mean clean loss 5.5722
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           random_resized_crop    mean Cg +0.7149 | median Cg +0.7179 | mean Rg 1.0352 | mean dM +0.00108 | mean clean loss 5.5722
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           gaussian_blur          mean Cg +0.6488 | median Cg +0.6529 | mean Rg 1.1003 | mean dM +0.00310 | mean clean loss 5.5722
+2026-09-15 22:32:18 | INFO    | cicps.engine | init           random_erasing         mean Cg +0.7600 | median Cg +0.7818 | mean Rg 1.0771 | mean dM +0.00098 | mean clean loss 5.5722
+2026-09-15 22:32:19 | INFO    | cicps.engine | Stage 'init': model state verified unchanged (fingerprint afe24c4ffee1b40362c37508a416ee4a).
+2026-09-15 22:32:19 | INFO    | cicps.engine | === stage 2/9: experiment_0a_best === The exact frozen model Experiment 0A measured delta_margin on (epoch 17 of 20, val top-1 76.17%). This is the ANCHOR stage: only here can the gradient measurement be joined to 0A's margins image by image.
+2026-09-15 22:32:19 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0a\checkpoints\baseline_best.pt (epoch 16, seed 42, metrics: train_loss=0.0109, train_top1=0.9998, val_loss=0.9461, val_top1=0.7617, val_top5=0.9350).
+2026-09-15 22:32:19 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:32:19 | INFO    | cicps.engine | Stage 'experiment_0a_best': measuring 7 transformation(s): identity, horizontal_flip, color_jitter, rotation, random_resized_crop, gaussian_blur, random_erasing
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best horizontal_flip        mean Cg +0.6495 | median Cg +0.6566 | mean Rg 1.4393 | mean dM +0.03485 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best color_jitter           mean Cg +0.6813 | median Cg +0.7246 | mean Rg 43.8046 | mean dM -0.14533 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best rotation               mean Cg +0.7665 | median Cg +0.7758 | mean Rg 2.1659 | mean dM -0.00718 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best random_resized_crop    mean Cg +0.6853 | median Cg +0.7056 | mean Rg 8.8044 | mean dM -0.05929 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best gaussian_blur          mean Cg +0.5030 | median Cg +0.5001 | mean Rg 38.5255 | mean dM -0.21115 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | experiment_0a_best random_erasing         mean Cg +0.7531 | median Cg +0.8090 | mean Rg 24.5410 | mean dM -0.12161 | mean clean loss 0.9461
+2026-09-15 22:36:01 | INFO    | cicps.engine | Stage 'experiment_0a_best': model state verified unchanged (fingerprint b0bcbd87c85ffe314be69c4fae136429).
+2026-09-15 22:36:01 | INFO    | cicps.engine | === stage 3/9: 0b_baseline_best === Experiment 0B's reference arm at its selected epoch (14 of 20, val top-1 78.17%) - a converged model trained under the standard recipe.
+2026-09-15 22:36:01 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline\best.pt (epoch 13, seed 1880975077, metrics: train_loss=0.0145, train_top1=0.9996, train_top5=1.0000, val_loss=0.9187, val_top1=0.7817, val_top5=0.9300).
+2026-09-15 22:36:02 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:36:02 | INFO    | cicps.engine | Stage '0b_baseline_best': measuring 7 transformation(s): identity, horizontal_flip, color_jitter, rotation, random_resized_crop, gaussian_blur, random_erasing
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.9187
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best horizontal_flip        mean Cg +0.6500 | median Cg +0.6595 | mean Rg 1.5031 | mean dM +0.01928 | mean clean loss 0.9187
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best color_jitter           mean Cg +0.6861 | median Cg +0.7246 | mean Rg 25.8988 | mean dM -0.14948 | mean clean loss 0.9187
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best rotation               mean Cg +0.7783 | median Cg +0.7902 | mean Rg 2.1129 | mean dM -0.02350 | mean clean loss 0.9187
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best random_resized_crop    mean Cg +0.6971 | median Cg +0.7163 | mean Rg 5.5258 | mean dM -0.08367 | mean clean loss 0.9187
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best gaussian_blur          mean Cg +0.5367 | median Cg +0.5455 | mean Rg 30.7970 | mean dM -0.20815 | mean clean loss 0.9187
+2026-09-15 22:40:42 | INFO    | cicps.engine | 0b_baseline_best random_erasing         mean Cg +0.7450 | median Cg +0.7999 | mean Rg 13.1835 | mean dM -0.12271 | mean clean loss 0.9187
+2026-09-15 22:40:43 | INFO    | cicps.engine | Stage '0b_baseline_best': model state verified unchanged (fingerprint 11909def43088bab6a364d9eefa0aeda).
+2026-09-15 22:40:43 | INFO    | cicps.engine | === stage 4/9: 0b_baseline_last === Experiment 0B's reference arm at the end of its budget (epoch 20, val top-1 77.17%) - the same lineage, slightly past its best validation point.
+2026-09-15 22:40:43 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline\last.pt (epoch 19, seed 1880975077, metrics: train_loss=0.0093, train_top1=1.0000, train_top5=1.0000, val_loss=0.9112, val_top1=0.7717, val_top5=0.9333).
+2026-09-15 22:40:43 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:40:43 | INFO    | cicps.engine | Stage '0b_baseline_last': measuring 7 transformation(s): identity, horizontal_flip, color_jitter, rotation, random_resized_crop, gaussian_blur, random_erasing
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last horizontal_flip        mean Cg +0.6475 | median Cg +0.6559 | mean Rg 1.5716 | mean dM +0.02808 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last color_jitter           mean Cg +0.6753 | median Cg +0.7105 | mean Rg 27.2117 | mean dM -0.15220 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last rotation               mean Cg +0.7757 | median Cg +0.7863 | mean Rg 2.2811 | mean dM -0.01698 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last random_resized_crop    mean Cg +0.6950 | median Cg +0.7147 | mean Rg 6.2284 | mean dM -0.07812 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last gaussian_blur          mean Cg +0.5368 | median Cg +0.5488 | mean Rg 43.2683 | mean dM -0.20710 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | 0b_baseline_last random_erasing         mean Cg +0.7426 | median Cg +0.8014 | mean Rg 17.9674 | mean dM -0.11709 | mean clean loss 0.9112
+2026-09-15 22:45:14 | INFO    | cicps.engine | Stage '0b_baseline_last': model state verified unchanged (fingerprint d4177eb98acad0284d798534d5168fdd).
+2026-09-15 22:45:14 | INFO    | cicps.engine | === stage 5/9: 0b_color_jitter_best === Adaptation probe - colour jitter on the colour-jitter-trained model.
+2026-09-15 22:45:14 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline_color_jitter\best.pt (epoch 15, seed 503065231, metrics: train_loss=0.0208, train_top1=0.9996, train_top5=1.0000, val_loss=1.0069, val_top1=0.7383, val_top5=0.9183).
+2026-09-15 22:45:15 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:45:15 | INFO    | cicps.engine | Stage '0b_color_jitter_best': measuring 2 transformation(s): identity, color_jitter
+2026-09-15 22:47:20 | INFO    | cicps.engine | 0b_color_jitter_best identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 1.0068
+2026-09-15 22:47:20 | INFO    | cicps.engine | 0b_color_jitter_best color_jitter           mean Cg +0.8517 | median Cg +0.8686 | mean Rg 1.7174 | mean dM -0.01207 | mean clean loss 1.0068
+2026-09-15 22:47:21 | INFO    | cicps.engine | Stage '0b_color_jitter_best': model state verified unchanged (fingerprint 1672579306700c96de71d4d40f5c41a8).
+2026-09-15 22:47:21 | INFO    | cicps.engine | === stage 6/9: 0b_rotation_best === Adaptation probe - rotation on the rotation-trained model.
+2026-09-15 22:47:21 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline_rotation\best.pt (epoch 14, seed 69590260, metrics: train_loss=0.0197, train_top1=0.9996, train_top5=1.0000, val_loss=0.9710, val_top1=0.7600, val_top5=0.9383).
+2026-09-15 22:47:21 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:47:21 | INFO    | cicps.engine | Stage '0b_rotation_best': measuring 2 transformation(s): identity, rotation
+2026-09-15 22:49:14 | INFO    | cicps.engine | 0b_rotation_best identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.9710
+2026-09-15 22:49:14 | INFO    | cicps.engine | 0b_rotation_best rotation               mean Cg +0.8090 | median Cg +0.8137 | mean Rg 1.3791 | mean dM +0.01720 | mean clean loss 0.9710
+2026-09-15 22:49:14 | INFO    | cicps.engine | Stage '0b_rotation_best': model state verified unchanged (fingerprint 3bac0cda6ec802ae23348579ba1a5b90).
+2026-09-15 22:49:14 | INFO    | cicps.engine | === stage 7/9: 0b_crop_best === Adaptation probe - crop on the stronger-crop-trained model.
+2026-09-15 22:49:14 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline_crop\best.pt (epoch 18, seed 1179721965, metrics: train_loss=0.0239, train_top1=0.9981, train_top5=0.9994, val_loss=0.8733, val_top1=0.7867, val_top5=0.9417).
+2026-09-15 22:49:15 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:49:15 | INFO    | cicps.engine | Stage '0b_crop_best': measuring 2 transformation(s): identity, random_resized_crop
+2026-09-15 22:51:21 | INFO    | cicps.engine | 0b_crop_best   identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.8733
+2026-09-15 22:51:21 | INFO    | cicps.engine | 0b_crop_best   random_resized_crop    mean Cg +0.7042 | median Cg +0.7232 | mean Rg 6.7508 | mean dM -0.05367 | mean clean loss 0.8733
+2026-09-15 22:51:21 | INFO    | cicps.engine | Stage '0b_crop_best': model state verified unchanged (fingerprint b403321fc6e819f3ed62dc6e93358695).
+2026-09-15 22:51:21 | INFO    | cicps.engine | === stage 8/9: 0b_gaussian_blur_best === Adaptation probe - blur on the blur-trained model.
+2026-09-15 22:51:21 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline_gaussian_blur\best.pt (epoch 18, seed 1659421884, metrics: train_loss=0.0149, train_top1=0.9998, train_top5=1.0000, val_loss=0.9638, val_top1=0.7700, val_top5=0.9367).
+2026-09-15 22:51:21 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:51:21 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:51:22 | INFO    | cicps.engine | Stage '0b_gaussian_blur_best': measuring 2 transformation(s): identity, gaussian_blur
+2026-09-15 22:53:38 | INFO    | cicps.engine | 0b_gaussian_blur_best identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.9638
+2026-09-15 22:53:38 | INFO    | cicps.engine | 0b_gaussian_blur_best gaussian_blur          mean Cg +0.7900 | median Cg +0.8014 | mean Rg 1.6079 | mean dM +0.00250 | mean clean loss 0.9638
+2026-09-15 22:53:38 | INFO    | cicps.engine | Stage '0b_gaussian_blur_best': model state verified unchanged (fingerprint 910e79ef9fb0c439cc982584d10e0406).
+2026-09-15 22:53:38 | INFO    | cicps.engine | === stage 9/9: 0b_random_erasing_best === Adaptation probe - erasing on the erasing-trained model.
+2026-09-15 22:53:38 | INFO    | cicps.checkpoint | Loaded checkpoint D:\Projects\cicps-augmentation\outputs\experiment_0b\checkpoints\baseline_random_erasing\best.pt (epoch 18, seed 1505275385, metrics: train_loss=0.0821, train_top1=0.9865, train_top5=0.9983, val_loss=0.9803, val_top1=0.7583, val_top5=0.9267).
+2026-09-15 22:53:38 | INFO    | cicps.factory | Built resnet18 (pretrained=False, weights=None, feature_dim=512, num_classes=200, params=11.28M).
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope full       :  62 tensor(s),  11279112 parameter(s)  [primary]
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope backbone   :  60 tensor(s),  11176512 parameter(s)
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope head       :   2 tensor(s),    102600 parameter(s)
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope stem       :   3 tensor(s),      9536 parameter(s)
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope layer1     :  12 tensor(s),    147968 parameter(s)
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope layer2     :  15 tensor(s),    525568 parameter(s)
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope layer3     :  15 tensor(s),   2099712 parameter(s)
+2026-09-15 22:53:38 | INFO    | cicps.scopes | Gradient scope layer4     :  15 tensor(s),   8393728 parameter(s)
+2026-09-15 22:53:39 | INFO    | cicps.engine | Stage '0b_random_erasing_best': measuring 2 transformation(s): identity, random_erasing
+2026-09-15 22:56:03 | INFO    | cicps.engine | 0b_random_erasing_best identity               mean Cg +1.0000 | median Cg +1.0000 | mean Rg 1.0000 | mean dM +0.00000 | mean clean loss 0.9803
+2026-09-15 22:56:03 | INFO    | cicps.engine | 0b_random_erasing_best random_erasing         mean Cg +0.8201 | median Cg +0.8682 | mean Rg 3.3853 | mean dM -0.04455 | mean clean loss 0.9803
+2026-09-15 22:56:04 | INFO    | cicps.engine | Stage '0b_random_erasing_best': model state verified unchanged (fingerprint 184a00a7891a596ee3714102e670cf09).
+2026-09-15 22:56:04 | INFO    | cicps.gradients | Measurement complete in 1678.6 s (22800 record rows).
+2026-09-15 22:56:07 | INFO    | cicps.records | Wrote 22800 row(s) x 66 column(s) to D:\Projects\cicps-augmentation\outputs\experiment_1a\gradients\gradient_records.csv
+2026-09-15 22:56:07 | INFO    | cicps.records | Wrote 5400 row(s) x 18 column(s) to D:\Projects\cicps-augmentation\outputs\experiment_1a\gradients\clean_reference.csv
+2026-09-15 22:56:07 | INFO    | cicps.gradients | Wrote gradient manifest to D:\Projects\cicps-augmentation\outputs\experiment_1a\gradients\gradient_manifest.json
