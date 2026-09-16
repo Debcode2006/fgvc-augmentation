@@ -8,6 +8,7 @@ outputs/**/checkpoints/
 # (docs/experiment_0a.md §26, docs/experiment_0b.md §25).
 outputs/smoke_0a/
 outputs/smoke_0b/
+outputs/smoke_1a/
 
 # The dataset is not tracked; see docs/experiment_0a.md for the expected layout.
 data/
