@@ -1,0 +1,699 @@
+{
+  "experiment": "experiment_1a",
+  "created_at": "2026-09-15T17:26:07+00:00",
+  "git_commit": "4f18f61e2f183a211e608225364634dbd74bb2fd",
+  "seed": 42,
+  "transform_param_seed": 42,
+  "realisations": 1,
+  "sampling_protocol": "Realisation 0 reuses Experiment 0A's frozen parameter key derive_seed(param_seed, image_id, transform_name) verbatim, so the transformed image is bit-identical to the one 0A measured. Realisations >= 1 extend the key and are independent draws.",
+  "split_subset": "val",
+  "split_fingerprint": "2c3a0390542d2a57",
+  "num_images": 600,
+  "num_records": 22800,
+  "gradient_mode": "eval",
+  "gradient_mode_rationale": "model.eval(): frozen BatchNorm running statistics, so the clean and transformed passes differ only in pixels and a single-sample gradient is well defined.",
+  "precision": {
+    "dtype": "float32",
+    "allow_tf32": false,
+    "autocast": false,
+    "reduction_dtype": "float64"
+  },
+  "scopes": {
+    "primary": "full",
+    "num_trainable_tensors": 62,
+    "scopes": [
+      {
+        "name": "full",
+        "patterns": [
+          "^backbone\\.",
+          "^classifier\\."
+        ],
+        "num_tensors": 62,
+        "num_parameters": 11279112
+      },
+      {
+        "name": "backbone",
+        "patterns": [
+          "^backbone\\."
+        ],
+        "num_tensors": 60,
+        "num_parameters": 11176512
+      },
+      {
+        "name": "head",
+        "patterns": [
+          "^classifier\\."
+        ],
+        "num_tensors": 2,
+        "num_parameters": 102600
+      },
+      {
+        "name": "stem",
+        "patterns": [
+          "^backbone\\.(conv1|bn1)\\."
+        ],
+        "num_tensors": 3,
+        "num_parameters": 9536
+      },
+      {
+        "name": "layer1",
+        "patterns": [
+          "^backbone\\.layer1\\."
+        ],
+        "num_tensors": 12,
+        "num_parameters": 147968
+      },
+      {
+        "name": "layer2",
+        "patterns": [
+          "^backbone\\.layer2\\."
+        ],
+        "num_tensors": 15,
+        "num_parameters": 525568
+      },
+      {
+        "name": "layer3",
+        "patterns": [
+          "^backbone\\.layer3\\."
+        ],
+        "num_tensors": 15,
+        "num_parameters": 2099712
+      },
+      {
+        "name": "layer4",
+        "patterns": [
+          "^backbone\\.layer4\\."
+        ],
+        "num_tensors": 15,
+        "num_parameters": 8393728
+      }
+    ]
+  },
+  "checkpoints": [
+    {
+      "name": "init",
+      "kind": "init",
+      "description": "Epoch 0. ImageNet-pretrained backbone with a freshly drawn head, reconstructed under the master seed - the same two-step seeding Experiment 0B performs before training each arm, and verified to rebuild bit-identically. No such checkpoint was ever written to disk.",
+      "path": null,
+      "policy": null,
+      "transforms": null,
+      "epoch": -1,
+      "metrics": {}
+    },
+    {
+      "name": "experiment_0a_best",
+      "kind": "file",
+      "description": "The exact frozen model Experiment 0A measured delta_margin on (epoch 17 of 20, val top-1 76.17%). This is the ANCHOR stage: only here can the gradient measurement be joined to 0A's margins image by image.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0a\\checkpoints\\baseline_best.pt",
+      "policy": null,
+      "transforms": null,
+      "epoch": 16,
+      "metrics": {
+        "val_top1": 0.7616666666666667,
+        "val_top5": 0.935,
+        "val_loss": 0.9461051313082377,
+        "train_top1": 0.9998146088246199,
+        "train_loss": 0.01094610948967832
+      }
+    },
+    {
+      "name": "0b_baseline_best",
+      "kind": "file",
+      "description": "Experiment 0B's reference arm at its selected epoch (14 of 20, val top-1 78.17%) - a converged model trained under the standard recipe.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline\\best.pt",
+      "policy": "baseline",
+      "transforms": null,
+      "epoch": 13,
+      "metrics": {
+        "val_top1": 0.7816666666666666,
+        "val_top5": 0.93,
+        "val_loss": 0.9186668117841085,
+        "train_top1": 0.9996292176492398,
+        "train_top5": 1.0,
+        "train_loss": 0.014494494371693534
+      }
+    },
+    {
+      "name": "0b_baseline_last",
+      "kind": "file",
+      "description": "Experiment 0B's reference arm at the end of its budget (epoch 20, val top-1 77.17%) - the same lineage, slightly past its best validation point.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline\\last.pt",
+      "policy": "baseline",
+      "transforms": null,
+      "epoch": 19,
+      "metrics": {
+        "val_top1": 0.7716666666666666,
+        "val_top5": 0.9333333333333333,
+        "val_loss": 0.9111531432469686,
+        "train_top1": 1.0,
+        "train_top5": 1.0,
+        "train_loss": 0.009323980617808288
+      }
+    },
+    {
+      "name": "0b_color_jitter_best",
+      "kind": "file",
+      "description": "Adaptation probe - colour jitter on the colour-jitter-trained model.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_color_jitter\\best.pt",
+      "policy": "baseline_color_jitter",
+      "transforms": [
+        "identity",
+        "color_jitter"
+      ],
+      "epoch": 15,
+      "metrics": {
+        "val_top1": 0.7383333333333333,
+        "val_top5": 0.9183333333333333,
+        "val_loss": 1.0068655260403951,
+        "train_top1": 0.9996292176492398,
+        "train_top5": 1.0,
+        "train_loss": 0.0208443273183457
+      }
+    },
+    {
+      "name": "0b_rotation_best",
+      "kind": "file",
+      "description": "Adaptation probe - rotation on the rotation-trained model.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_rotation\\best.pt",
+      "policy": "baseline_rotation",
+      "transforms": [
+        "identity",
+        "rotation"
+      ],
+      "epoch": 14,
+      "metrics": {
+        "val_top1": 0.76,
+        "val_top5": 0.9383333333333334,
+        "val_loss": 0.9709507409731547,
+        "train_top1": 0.9996292176492398,
+        "train_top5": 1.0,
+        "train_loss": 0.019722177907078628
+      }
+    },
+    {
+      "name": "0b_crop_best",
+      "kind": "file",
+      "description": "Adaptation probe - crop on the stronger-crop-trained model.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_crop\\best.pt",
+      "policy": "baseline_crop",
+      "transforms": [
+        "identity",
+        "random_resized_crop"
+      ],
+      "epoch": 18,
+      "metrics": {
+        "val_top1": 0.7866666666666666,
+        "val_top5": 0.9416666666666667,
+        "val_loss": 0.8732846395174663,
+        "train_top1": 0.9981460882461994,
+        "train_top5": 0.9994438264738599,
+        "train_loss": 0.023944360928863432
+      }
+    },
+    {
+      "name": "0b_gaussian_blur_best",
+      "kind": "file",
+      "description": "Adaptation probe - blur on the blur-trained model.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_gaussian_blur\\best.pt",
+      "policy": "baseline_gaussian_blur",
+      "transforms": [
+        "identity",
+        "gaussian_blur"
+      ],
+      "epoch": 18,
+      "metrics": {
+        "val_top1": 0.77,
+        "val_top5": 0.9366666666666666,
+        "val_loss": 0.9637782629330953,
+        "train_top1": 0.9998146088246199,
+        "train_top5": 1.0,
+        "train_loss": 0.014923799048154761
+      }
+    },
+    {
+      "name": "0b_random_erasing_best",
+      "kind": "file",
+      "description": "Adaptation probe - erasing on the erasing-trained model.",
+      "path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_0b\\checkpoints\\baseline_random_erasing\\best.pt",
+      "policy": "baseline_random_erasing",
+      "transforms": [
+        "identity",
+        "random_erasing"
+      ],
+      "epoch": 18,
+      "metrics": {
+        "val_top1": 0.7583333333333333,
+        "val_top5": 0.9266666666666666,
+        "val_loss": 0.9803212157885234,
+        "train_top1": 0.9864664441972563,
+        "train_top5": 0.9983314794215795,
+        "train_loss": 0.08205234697782689
+      }
+    }
+  ],
+  "transformations": [
+    {
+      "name": "identity",
+      "type": "identity",
+      "params": {}
+    },
+    {
+      "name": "horizontal_flip",
+      "type": "horizontal_flip",
+      "params": {}
+    },
+    {
+      "name": "color_jitter",
+      "type": "color_jitter",
+      "params": {
+        "brightness": 0.4,
+        "contrast": 0.4,
+        "saturation": 0.4,
+        "hue": 0.1
+      }
+    },
+    {
+      "name": "rotation",
+      "type": "rotation",
+      "params": {
+        "degrees": 15.0,
+        "interpolation": "bilinear",
+        "expand": false,
+        "fill": 0
+      }
+    },
+    {
+      "name": "random_resized_crop",
+      "type": "random_resized_crop",
+      "params": {
+        "scale": [
+          0.5,
+          0.9
+        ],
+        "ratio": [
+          0.75,
+          1.3333
+        ],
+        "interpolation": "bilinear"
+      }
+    },
+    {
+      "name": "gaussian_blur",
+      "type": "gaussian_blur",
+      "params": {
+        "kernel_size": 9,
+        "sigma": [
+          1.0,
+          2.0
+        ]
+      }
+    },
+    {
+      "name": "random_erasing",
+      "type": "random_erasing",
+      "params": {
+        "scale": [
+          0.05,
+          0.2
+        ],
+        "ratio": [
+          0.3,
+          3.3
+        ],
+        "value": 0.0
+      }
+    }
+  ],
+  "null_control": {
+    "enabled": true,
+    "definition": "Cosine between this image's clean gradient and the previously processed image's clean gradient, under a seeded permutation of the traversal order. It calibrates what an unrelated learning signal scores at this scope."
+  },
+  "device": "cuda",
+  "torch_version": "2.11.0+cu128",
+  "python_version": "3.12.7",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "cuda_device": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "runtime_seconds": 1678.61,
+  "warnings": [],
+  "records_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_1a\\gradients\\gradient_records.csv",
+  "clean_path": "D:\\Projects\\cicps-augmentation\\outputs\\experiment_1a\\gradients\\clean_reference.csv",
+  "config": {
+    "experiment": {
+      "name": "experiment_1a",
+      "description": "Gradient compatibility analysis: for each frozen checkpoint, each audited transformation and each validation image, compare the parameter gradient of the clean image against that of its transformed counterpart - cosine similarity C_g and norm ratio R_g - alongside the Experiment 0A margin quantities measured on the same image."
+    },
+    "seed": {
+      "value": 42,
+      "deterministic_algorithms": false,
+      "cudnn_deterministic": true,
+      "cudnn_benchmark": false,
+      "seed_dataloader_workers": true
+    },
+    "dataset": {
+      "name": "cub_200_2011",
+      "root": "data/CUB_200_2011",
+      "images_dir": "images",
+      "metadata": {
+        "images": "images.txt",
+        "labels": "image_class_labels.txt",
+        "split": "train_test_split.txt",
+        "classes": "classes.txt"
+      },
+      "expected": {
+        "num_images": 11788,
+        "num_classes": 200,
+        "num_official_train": 5994,
+        "num_official_test": 5794
+      },
+      "validation": {
+        "check_image_paths": true,
+        "check_image_readable": false,
+        "strict_counts": true
+      }
+    },
+    "split": {
+      "val_fraction": 0.1,
+      "stratified": true,
+      "seed": null,
+      "path": "outputs/experiment_0a/splits/internal_split.json",
+      "overwrite": false
+    },
+    "model": {
+      "architecture": "resnet18",
+      "pretrained": true,
+      "weights": "IMAGENET1K_V1",
+      "num_classes": 200,
+      "feature_dim": null
+    },
+    "preprocess": {
+      "image_size": 224,
+      "resize_size": 256,
+      "interpolation": "bilinear",
+      "normalize": {
+        "mean": [
+          0.485,
+          0.456,
+          0.406
+        ],
+        "std": [
+          0.229,
+          0.224,
+          0.225
+        ]
+      }
+    },
+    "train": {
+      "loss": {
+        "name": "cross_entropy",
+        "label_smoothing": 0.0
+      }
+    },
+    "gradients": {
+      "split_subset": "val",
+      "max_images": null,
+      "batch_size": 8,
+      "num_workers": 4,
+      "pin_memory": true,
+      "progress": true,
+      "precision": {
+        "dtype": "float32",
+        "allow_tf32": false
+      },
+      "sampling": {
+        "param_seed": null,
+        "realisations": 1
+      },
+      "null_control": {
+        "enabled": true
+      },
+      "scopes": {
+        "full": [
+          "^backbone\\.",
+          "^classifier\\."
+        ],
+        "backbone": [
+          "^backbone\\."
+        ],
+        "head": [
+          "^classifier\\."
+        ],
+        "stem": [
+          "^backbone\\.(conv1|bn1)\\."
+        ],
+        "layer1": [
+          "^backbone\\.layer1\\."
+        ],
+        "layer2": [
+          "^backbone\\.layer2\\."
+        ],
+        "layer3": [
+          "^backbone\\.layer3\\."
+        ],
+        "layer4": [
+          "^backbone\\.layer4\\."
+        ]
+      },
+      "primary_scope": "full",
+      "checkpoints": [
+        {
+          "name": "init",
+          "kind": "init",
+          "description": "Epoch 0. ImageNet-pretrained backbone with a freshly drawn head, reconstructed under the master seed - the same two-step seeding Experiment 0B performs before training each arm, and verified to rebuild bit-identically. No such checkpoint was ever written to disk."
+        },
+        {
+          "name": "experiment_0a_best",
+          "kind": "file",
+          "path": "outputs/experiment_0a/checkpoints/baseline_best.pt",
+          "policy": null,
+          "description": "The exact frozen model Experiment 0A measured delta_margin on (epoch 17 of 20, val top-1 76.17%). This is the ANCHOR stage: only here can the gradient measurement be joined to 0A's margins image by image."
+        },
+        {
+          "name": "0b_baseline_best",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline/best.pt",
+          "policy": "baseline",
+          "description": "Experiment 0B's reference arm at its selected epoch (14 of 20, val top-1 78.17%) - a converged model trained under the standard recipe."
+        },
+        {
+          "name": "0b_baseline_last",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline/last.pt",
+          "policy": "baseline",
+          "description": "Experiment 0B's reference arm at the end of its budget (epoch 20, val top-1 77.17%) - the same lineage, slightly past its best validation point."
+        },
+        {
+          "name": "0b_color_jitter_best",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline_color_jitter/best.pt",
+          "policy": "baseline_color_jitter",
+          "transforms": [
+            "identity",
+            "color_jitter"
+          ],
+          "description": "Adaptation probe - colour jitter on the colour-jitter-trained model."
+        },
+        {
+          "name": "0b_rotation_best",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline_rotation/best.pt",
+          "policy": "baseline_rotation",
+          "transforms": [
+            "identity",
+            "rotation"
+          ],
+          "description": "Adaptation probe - rotation on the rotation-trained model."
+        },
+        {
+          "name": "0b_crop_best",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline_crop/best.pt",
+          "policy": "baseline_crop",
+          "transforms": [
+            "identity",
+            "random_resized_crop"
+          ],
+          "description": "Adaptation probe - crop on the stronger-crop-trained model."
+        },
+        {
+          "name": "0b_gaussian_blur_best",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline_gaussian_blur/best.pt",
+          "policy": "baseline_gaussian_blur",
+          "transforms": [
+            "identity",
+            "gaussian_blur"
+          ],
+          "description": "Adaptation probe - blur on the blur-trained model."
+        },
+        {
+          "name": "0b_random_erasing_best",
+          "kind": "file",
+          "path": "outputs/experiment_0b/checkpoints/baseline_random_erasing/best.pt",
+          "policy": "baseline_random_erasing",
+          "transforms": [
+            "identity",
+            "random_erasing"
+          ],
+          "description": "Adaptation probe - erasing on the erasing-trained model."
+        }
+      ],
+      "output": {
+        "dir": "outputs/experiment_1a/gradients",
+        "format": "csv",
+        "records_name": "gradient_records",
+        "clean_name": "clean_reference",
+        "manifest_name": "gradient_manifest.json",
+        "float_precision": 8
+      }
+    },
+    "transformations": [
+      {
+        "name": "identity",
+        "type": "identity",
+        "params": {}
+      },
+      {
+        "name": "horizontal_flip",
+        "type": "horizontal_flip",
+        "params": {}
+      },
+      {
+        "name": "color_jitter",
+        "type": "color_jitter",
+        "params": {
+          "brightness": 0.4,
+          "contrast": 0.4,
+          "saturation": 0.4,
+          "hue": 0.1
+        }
+      },
+      {
+        "name": "rotation",
+        "type": "rotation",
+        "params": {
+          "degrees": 15.0,
+          "interpolation": "bilinear",
+          "expand": false,
+          "fill": 0
+        }
+      },
+      {
+        "name": "random_resized_crop",
+        "type": "random_resized_crop",
+        "params": {
+          "scale": [
+            0.5,
+            0.9
+          ],
+          "ratio": [
+            0.75,
+            1.3333
+          ],
+          "interpolation": "bilinear"
+        }
+      },
+      {
+        "name": "gaussian_blur",
+        "type": "gaussian_blur",
+        "params": {
+          "kernel_size": 9,
+          "sigma": [
+            1.0,
+            2.0
+          ]
+        }
+      },
+      {
+        "name": "random_erasing",
+        "type": "random_erasing",
+        "params": {
+          "scale": [
+            0.05,
+            0.2
+          ],
+          "ratio": [
+            0.3,
+            3.3
+          ],
+          "value": 0.0
+        }
+      }
+    ],
+    "analysis": {
+      "anchor_checkpoint": "experiment_0a_best",
+      "control_transform": "identity",
+      "control_tolerance": 1e-06,
+      "quantiles": [
+        0.01,
+        0.05,
+        0.25,
+        0.5,
+        0.75,
+        0.95,
+        0.99
+      ],
+      "bootstrap": {
+        "resamples": 2000,
+        "confidence": 0.95
+      },
+      "reference_0a_records": "outputs/experiment_0a/audit/transformation_audit.csv",
+      "reference_0b_runs": "outputs/experiment_0b/logs/train_runs.csv",
+      "reference_0b_baseline": "baseline",
+      "join_0a": {
+        "enabled": true,
+        "output_name": "joined_1a_0a_per_sample",
+        "tolerance": 0.005
+      },
+      "join_0b": {
+        "enabled": true,
+        "output_name": "joined_1a_0b_summary"
+      },
+      "association": {
+        "methods": [
+          "pearson",
+          "spearman"
+        ],
+        "output_name": "association_exploratory"
+      },
+      "output": {
+        "dir": "outputs/experiment_1a/analysis",
+        "format": "csv",
+        "summary_name": "gradient_summary",
+        "null_name": "null_control_summary",
+        "relationships_name": "relationship_summary"
+      },
+      "plots": {
+        "kinds": [
+          "grad_cosine_distribution",
+          "grad_norm_ratio_distribution",
+          "grad_cosine_vs_delta_margin",
+          "grad_cosine_vs_feature_cosine",
+          "grad_cosine_by_checkpoint",
+          "grad_norm_ratio_by_checkpoint",
+          "grad_cosine_vs_downstream",
+          "scope_heatmap"
+        ],
+        "dpi": 200,
+        "figsize": [
+          12,
+          6
+        ],
+        "file_format": "png",
+        "dir": "outputs/experiment_1a/analysis/plots"
+      }
+    },
+    "runtime": {
+      "device": "auto",
+      "require_device": false
+    },
+    "logging": {
+      "level": "INFO",
+      "dir": "outputs/experiment_1a/logs",
+      "file_template": "{stage}.log",
+      "to_file": true,
+      "to_console": true,
+      "format": "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s",
+      "date_format": "%Y-%m-%d %H:%M:%S"
+    }
+  }
+}
