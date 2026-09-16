@@ -15,3 +15,20 @@
 2026-08-23 19:17:24 | INFO    | cicps.plots | Wrote plot D:\Projects\cicps-augmentation\outputs\experiment_0a\analysis\plots\delta_margin_box.png
 2026-08-23 19:17:25 | INFO    | cicps.plots | Wrote plot D:\Projects\cicps-augmentation\outputs\experiment_0a\analysis\plots\delta_margin_hist.png
 2026-08-23 19:17:25 | INFO    | cicps.analyze | Analysis complete. These are descriptive statistics only: no significance test was run, and a higher mean delta_margin does not by itself make a transformation better.
+2026-09-15 22:28:10 | INFO    | cicps | Logging to D:\Projects\cicps-augmentation\outputs\experiment_0a\logs\analyze.log
+2026-09-15 22:28:10 | INFO    | cicps.analyze | Configuration: D:\Projects\cicps-augmentation\config\experiment_0a.yaml
+2026-09-15 22:28:11 | INFO    | cicps.analyze | Loaded 4200 audit row(s) from D:\Projects\cicps-augmentation\outputs\experiment_0a\audit\transformation_audit.csv
+2026-09-15 22:28:11 | INFO    | cicps.summary | Built summary table for 7 transformation(s).
+2026-09-15 22:28:11 | INFO    | cicps.analyze |             transform  n_samples  delta_margin_mean  delta_margin_median  delta_margin_std  frac_delta_negative  feature_cosine_mean  prediction_consistency_rate  accuracy_original  accuracy_augmented
+2026-09-15 22:28:11 | INFO    | cicps.analyze |              identity        600            0.00000              0.00000           0.00000              0.00000              1.00000                      1.00000            0.76167             0.76167
+2026-09-15 22:28:11 | INFO    | cicps.analyze |       horizontal_flip        600            0.03487              0.00125           0.24006              0.44167              0.96187                      0.88333            0.76167             0.78000
+2026-09-15 22:28:11 | INFO    | cicps.analyze |          color_jitter        600           -0.14534             -0.04407           0.41384              0.68333              0.91853                      0.69500            0.76167             0.60000
+2026-09-15 22:28:11 | INFO    | cicps.analyze |              rotation        600           -0.00716             -0.00070           0.25172              0.53000              0.95977                      0.86500            0.76167             0.74833
+2026-09-15 22:28:11 | INFO    | cicps.analyze |   random_resized_crop        600           -0.05927             -0.00462           0.34917              0.56833              0.93783                      0.79000            0.76167             0.69833
+2026-09-15 22:28:11 | INFO    | cicps.analyze |         gaussian_blur        600           -0.21115             -0.14582           0.46270              0.71333              0.86466                      0.61000            0.76167             0.53500
+2026-09-15 22:28:11 | INFO    | cicps.analyze |        random_erasing        600           -0.12161             -0.01488           0.39057              0.65000              0.92719                      0.74500            0.76167             0.63000
+2026-09-15 22:28:11 | INFO    | cicps.records | Wrote 7 row(s) x 25 column(s) to D:\Projects\cicps-augmentation\outputs\experiment_0a\analysis\transformation_summary.csv
+2026-09-15 22:28:12 | INFO    | cicps.plots | Wrote plot D:\Projects\cicps-augmentation\outputs\experiment_0a\analysis\plots\delta_margin_violin.png
+2026-09-15 22:28:12 | INFO    | cicps.plots | Wrote plot D:\Projects\cicps-augmentation\outputs\experiment_0a\analysis\plots\delta_margin_box.png
+2026-09-15 22:28:13 | INFO    | cicps.plots | Wrote plot D:\Projects\cicps-augmentation\outputs\experiment_0a\analysis\plots\delta_margin_hist.png
+2026-09-15 22:28:13 | INFO    | cicps.analyze | Analysis complete. These are descriptive statistics only: no significance test was run, and a higher mean delta_margin does not by itself make a transformation better.
