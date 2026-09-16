@@ -1,0 +1,115 @@
+checkpoint,transform,relationship,pearson,spearman,n_samples,note
+init,horizontal_flip,grad_cosine_vs_delta_margin,-0.050011854,-0.072103534,600,exploratory / descriptive only; no significance test
+init,horizontal_flip,grad_cosine_vs_feature_cosine,0.49752051,0.50159189,600,exploratory / descriptive only; no significance test
+init,horizontal_flip,grad_norm_ratio_vs_delta_margin,-0.36898594,-0.35927339,600,exploratory / descriptive only; no significance test
+init,color_jitter,grad_cosine_vs_delta_margin,-0.20062705,-0.25575849,600,exploratory / descriptive only; no significance test
+init,color_jitter,grad_cosine_vs_feature_cosine,0.91127871,0.93597438,600,exploratory / descriptive only; no significance test
+init,color_jitter,grad_norm_ratio_vs_delta_margin,-0.22140026,-0.17969744,600,exploratory / descriptive only; no significance test
+init,rotation,grad_cosine_vs_delta_margin,-0.092551009,-0.11788922,600,exploratory / descriptive only; no significance test
+init,rotation,grad_cosine_vs_feature_cosine,0.88090544,0.91168975,600,exploratory / descriptive only; no significance test
+init,rotation,grad_norm_ratio_vs_delta_margin,-0.30498955,-0.25472082,600,exploratory / descriptive only; no significance test
+init,random_resized_crop,grad_cosine_vs_delta_margin,-0.058930175,-0.064633291,600,exploratory / descriptive only; no significance test
+init,random_resized_crop,grad_cosine_vs_feature_cosine,0.82769223,0.87737016,600,exploratory / descriptive only; no significance test
+init,random_resized_crop,grad_norm_ratio_vs_delta_margin,-0.39804532,-0.40363001,600,exploratory / descriptive only; no significance test
+init,gaussian_blur,grad_cosine_vs_delta_margin,-0.23477647,-0.21684744,600,exploratory / descriptive only; no significance test
+init,gaussian_blur,grad_cosine_vs_feature_cosine,0.86711423,0.89038807,600,exploratory / descriptive only; no significance test
+init,gaussian_blur,grad_norm_ratio_vs_delta_margin,-0.37157685,-0.37448243,600,exploratory / descriptive only; no significance test
+init,random_erasing,grad_cosine_vs_delta_margin,-0.13899529,-0.14833052,600,exploratory / descriptive only; no significance test
+init,random_erasing,grad_cosine_vs_feature_cosine,0.92320239,0.9496493,600,exploratory / descriptive only; no significance test
+init,random_erasing,grad_norm_ratio_vs_delta_margin,-0.32079829,-0.32482768,600,exploratory / descriptive only; no significance test
+init,pooled (non-control),grad_cosine_vs_delta_margin,-0.15133902,-0.15560362,3600,exploratory / descriptive only; no significance test
+init,pooled (non-control),grad_cosine_vs_feature_cosine,0.75907625,0.74133554,3600,exploratory / descriptive only; no significance test
+init,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.31209253,-0.31000373,3600,exploratory / descriptive only; no significance test
+experiment_0a_best,horizontal_flip,grad_cosine_vs_delta_margin,-0.034586091,-0.046462574,600,exploratory / descriptive only; no significance test
+experiment_0a_best,horizontal_flip,grad_cosine_vs_feature_cosine,0.41570098,0.37571338,600,exploratory / descriptive only; no significance test
+experiment_0a_best,horizontal_flip,grad_norm_ratio_vs_delta_margin,-0.29577561,-0.74610935,600,exploratory / descriptive only; no significance test
+experiment_0a_best,color_jitter,grad_cosine_vs_delta_margin,0.19201353,0.2063568,600,exploratory / descriptive only; no significance test
+experiment_0a_best,color_jitter,grad_cosine_vs_feature_cosine,0.82068821,0.8522677,600,exploratory / descriptive only; no significance test
+experiment_0a_best,color_jitter,grad_norm_ratio_vs_delta_margin,-0.124073,-0.72712874,600,exploratory / descriptive only; no significance test
+experiment_0a_best,rotation,grad_cosine_vs_delta_margin,-0.093385308,-0.016181989,600,exploratory / descriptive only; no significance test
+experiment_0a_best,rotation,grad_cosine_vs_feature_cosine,0.66133493,0.69218648,600,exploratory / descriptive only; no significance test
+experiment_0a_best,rotation,grad_norm_ratio_vs_delta_margin,-0.34310325,-0.74904791,600,exploratory / descriptive only; no significance test
+experiment_0a_best,random_resized_crop,grad_cosine_vs_delta_margin,0.09557809,0.078589718,600,exploratory / descriptive only; no significance test
+experiment_0a_best,random_resized_crop,grad_cosine_vs_feature_cosine,0.68438073,0.71756022,600,exploratory / descriptive only; no significance test
+experiment_0a_best,random_resized_crop,grad_norm_ratio_vs_delta_margin,-0.12993584,-0.77421965,600,exploratory / descriptive only; no significance test
+experiment_0a_best,gaussian_blur,grad_cosine_vs_delta_margin,0.054067052,0.098840719,600,exploratory / descriptive only; no significance test
+experiment_0a_best,gaussian_blur,grad_cosine_vs_feature_cosine,0.71416714,0.74477535,600,exploratory / descriptive only; no significance test
+experiment_0a_best,gaussian_blur,grad_norm_ratio_vs_delta_margin,-0.26472824,-0.73122831,600,exploratory / descriptive only; no significance test
+experiment_0a_best,random_erasing,grad_cosine_vs_delta_margin,0.34849671,0.29969844,600,exploratory / descriptive only; no significance test
+experiment_0a_best,random_erasing,grad_cosine_vs_feature_cosine,0.88245943,0.92318234,600,exploratory / descriptive only; no significance test
+experiment_0a_best,random_erasing,grad_norm_ratio_vs_delta_margin,-0.19171938,-0.82811747,600,exploratory / descriptive only; no significance test
+experiment_0a_best,pooled (non-control),grad_cosine_vs_delta_margin,0.18515244,0.14807096,3600,exploratory / descriptive only; no significance test
+experiment_0a_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.76981164,0.75984048,3600,exploratory / descriptive only; no significance test
+experiment_0a_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.1266577,-0.78716954,3600,exploratory / descriptive only; no significance test
+0b_baseline_best,horizontal_flip,grad_cosine_vs_delta_margin,-0.059103251,-0.074495318,600,exploratory / descriptive only; no significance test
+0b_baseline_best,horizontal_flip,grad_cosine_vs_feature_cosine,0.43945534,0.43075275,600,exploratory / descriptive only; no significance test
+0b_baseline_best,horizontal_flip,grad_norm_ratio_vs_delta_margin,-0.4061601,-0.73765077,600,exploratory / descriptive only; no significance test
+0b_baseline_best,color_jitter,grad_cosine_vs_delta_margin,0.13242408,0.15129531,600,exploratory / descriptive only; no significance test
+0b_baseline_best,color_jitter,grad_cosine_vs_feature_cosine,0.79649794,0.84106973,600,exploratory / descriptive only; no significance test
+0b_baseline_best,color_jitter,grad_norm_ratio_vs_delta_margin,-0.20230319,-0.76730819,600,exploratory / descriptive only; no significance test
+0b_baseline_best,rotation,grad_cosine_vs_delta_margin,-0.03508518,-0.044228456,600,exploratory / descriptive only; no significance test
+0b_baseline_best,rotation,grad_cosine_vs_feature_cosine,0.64569419,0.70438446,600,exploratory / descriptive only; no significance test
+0b_baseline_best,rotation,grad_norm_ratio_vs_delta_margin,-0.23360037,-0.75170914,600,exploratory / descriptive only; no significance test
+0b_baseline_best,random_resized_crop,grad_cosine_vs_delta_margin,0.15256298,0.089151081,600,exploratory / descriptive only; no significance test
+0b_baseline_best,random_resized_crop,grad_cosine_vs_feature_cosine,0.68960253,0.71667699,600,exploratory / descriptive only; no significance test
+0b_baseline_best,random_resized_crop,grad_norm_ratio_vs_delta_margin,-0.29536139,-0.77685066,600,exploratory / descriptive only; no significance test
+0b_baseline_best,gaussian_blur,grad_cosine_vs_delta_margin,0.088149986,0.1280718,600,exploratory / descriptive only; no significance test
+0b_baseline_best,gaussian_blur,grad_cosine_vs_feature_cosine,0.7277947,0.75000914,600,exploratory / descriptive only; no significance test
+0b_baseline_best,gaussian_blur,grad_norm_ratio_vs_delta_margin,-0.21612534,-0.73887483,600,exploratory / descriptive only; no significance test
+0b_baseline_best,random_erasing,grad_cosine_vs_delta_margin,0.4055563,0.34096434,600,exploratory / descriptive only; no significance test
+0b_baseline_best,random_erasing,grad_cosine_vs_feature_cosine,0.87227441,0.91219109,600,exploratory / descriptive only; no significance test
+0b_baseline_best,random_erasing,grad_norm_ratio_vs_delta_margin,-0.26596996,-0.80166362,600,exploratory / descriptive only; no significance test
+0b_baseline_best,pooled (non-control),grad_cosine_vs_delta_margin,0.19154366,0.13791598,3600,exploratory / descriptive only; no significance test
+0b_baseline_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.75764204,0.75309785,3600,exploratory / descriptive only; no significance test
+0b_baseline_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.20109821,-0.7873765,3600,exploratory / descriptive only; no significance test
+0b_baseline_last,horizontal_flip,grad_cosine_vs_delta_margin,-0.065767389,-0.10292973,600,exploratory / descriptive only; no significance test
+0b_baseline_last,horizontal_flip,grad_cosine_vs_feature_cosine,0.4144951,0.40359868,600,exploratory / descriptive only; no significance test
+0b_baseline_last,horizontal_flip,grad_norm_ratio_vs_delta_margin,-0.37218738,-0.71642877,600,exploratory / descriptive only; no significance test
+0b_baseline_last,color_jitter,grad_cosine_vs_delta_margin,0.12839949,0.15806955,600,exploratory / descriptive only; no significance test
+0b_baseline_last,color_jitter,grad_cosine_vs_feature_cosine,0.80579141,0.84381523,600,exploratory / descriptive only; no significance test
+0b_baseline_last,color_jitter,grad_norm_ratio_vs_delta_margin,-0.26882159,-0.77532671,600,exploratory / descriptive only; no significance test
+0b_baseline_last,rotation,grad_cosine_vs_delta_margin,-0.042451599,-0.021782061,600,exploratory / descriptive only; no significance test
+0b_baseline_last,rotation,grad_cosine_vs_feature_cosine,0.65318099,0.70965714,600,exploratory / descriptive only; no significance test
+0b_baseline_last,rotation,grad_norm_ratio_vs_delta_margin,-0.22537729,-0.74265295,600,exploratory / descriptive only; no significance test
+0b_baseline_last,random_resized_crop,grad_cosine_vs_delta_margin,0.11305685,0.056232712,600,exploratory / descriptive only; no significance test
+0b_baseline_last,random_resized_crop,grad_cosine_vs_feature_cosine,0.70501032,0.72099745,600,exploratory / descriptive only; no significance test
+0b_baseline_last,random_resized_crop,grad_norm_ratio_vs_delta_margin,-0.31638397,-0.7677138,600,exploratory / descriptive only; no significance test
+0b_baseline_last,gaussian_blur,grad_cosine_vs_delta_margin,0.12340123,0.14748913,600,exploratory / descriptive only; no significance test
+0b_baseline_last,gaussian_blur,grad_cosine_vs_feature_cosine,0.73348777,0.75424915,600,exploratory / descriptive only; no significance test
+0b_baseline_last,gaussian_blur,grad_norm_ratio_vs_delta_margin,-0.18648682,-0.73705155,600,exploratory / descriptive only; no significance test
+0b_baseline_last,random_erasing,grad_cosine_vs_delta_margin,0.41665873,0.33091809,600,exploratory / descriptive only; no significance test
+0b_baseline_last,random_erasing,grad_cosine_vs_feature_cosine,0.87556092,0.91407259,600,exploratory / descriptive only; no significance test
+0b_baseline_last,random_erasing,grad_norm_ratio_vs_delta_margin,-0.21041743,-0.81123409,600,exploratory / descriptive only; no significance test
+0b_baseline_last,pooled (non-control),grad_cosine_vs_delta_margin,0.19796275,0.13767287,3600,exploratory / descriptive only; no significance test
+0b_baseline_last,pooled (non-control),grad_cosine_vs_feature_cosine,0.76215683,0.74863478,3600,exploratory / descriptive only; no significance test
+0b_baseline_last,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.20623248,-0.78524618,3600,exploratory / descriptive only; no significance test
+0b_color_jitter_best,color_jitter,grad_cosine_vs_delta_margin,-0.047195968,0.041675616,600,exploratory / descriptive only; no significance test
+0b_color_jitter_best,color_jitter,grad_cosine_vs_feature_cosine,0.78368004,0.81355798,600,exploratory / descriptive only; no significance test
+0b_color_jitter_best,color_jitter,grad_norm_ratio_vs_delta_margin,-0.15534791,-0.72809358,600,exploratory / descriptive only; no significance test
+0b_color_jitter_best,pooled (non-control),grad_cosine_vs_delta_margin,-0.047195968,0.041675616,600,exploratory / descriptive only; no significance test
+0b_color_jitter_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.78368004,0.81355798,600,exploratory / descriptive only; no significance test
+0b_color_jitter_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.15534791,-0.72809358,600,exploratory / descriptive only; no significance test
+0b_rotation_best,rotation,grad_cosine_vs_delta_margin,-0.10681244,-0.093025758,600,exploratory / descriptive only; no significance test
+0b_rotation_best,rotation,grad_cosine_vs_feature_cosine,0.66874631,0.73542021,600,exploratory / descriptive only; no significance test
+0b_rotation_best,rotation,grad_norm_ratio_vs_delta_margin,-0.23471968,-0.71675194,600,exploratory / descriptive only; no significance test
+0b_rotation_best,pooled (non-control),grad_cosine_vs_delta_margin,-0.10681244,-0.093025758,600,exploratory / descriptive only; no significance test
+0b_rotation_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.66874631,0.73542021,600,exploratory / descriptive only; no significance test
+0b_rotation_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.23471968,-0.71675194,600,exploratory / descriptive only; no significance test
+0b_crop_best,random_resized_crop,grad_cosine_vs_delta_margin,0.065690365,0.014312929,600,exploratory / descriptive only; no significance test
+0b_crop_best,random_resized_crop,grad_cosine_vs_feature_cosine,0.67485735,0.67045226,600,exploratory / descriptive only; no significance test
+0b_crop_best,random_resized_crop,grad_norm_ratio_vs_delta_margin,-0.18961936,-0.74072172,600,exploratory / descriptive only; no significance test
+0b_crop_best,pooled (non-control),grad_cosine_vs_delta_margin,0.065690365,0.014312929,600,exploratory / descriptive only; no significance test
+0b_crop_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.67485735,0.67045226,600,exploratory / descriptive only; no significance test
+0b_crop_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.18961936,-0.74072172,600,exploratory / descriptive only; no significance test
+0b_gaussian_blur_best,gaussian_blur,grad_cosine_vs_delta_margin,0.0058106945,-0.024410568,600,exploratory / descriptive only; no significance test
+0b_gaussian_blur_best,gaussian_blur,grad_cosine_vs_feature_cosine,0.73636406,0.7857724,600,exploratory / descriptive only; no significance test
+0b_gaussian_blur_best,gaussian_blur,grad_norm_ratio_vs_delta_margin,-0.24123014,-0.72553385,600,exploratory / descriptive only; no significance test
+0b_gaussian_blur_best,pooled (non-control),grad_cosine_vs_delta_margin,0.0058106945,-0.024410568,600,exploratory / descriptive only; no significance test
+0b_gaussian_blur_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.73636406,0.7857724,600,exploratory / descriptive only; no significance test
+0b_gaussian_blur_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.24123014,-0.72553385,600,exploratory / descriptive only; no significance test
+0b_random_erasing_best,random_erasing,grad_cosine_vs_delta_margin,0.2978823,0.16335801,600,exploratory / descriptive only; no significance test
+0b_random_erasing_best,random_erasing,grad_cosine_vs_feature_cosine,0.86385214,0.88981803,600,exploratory / descriptive only; no significance test
+0b_random_erasing_best,random_erasing,grad_norm_ratio_vs_delta_margin,-0.41266987,-0.76140006,600,exploratory / descriptive only; no significance test
+0b_random_erasing_best,pooled (non-control),grad_cosine_vs_delta_margin,0.2978823,0.16335801,600,exploratory / descriptive only; no significance test
+0b_random_erasing_best,pooled (non-control),grad_cosine_vs_feature_cosine,0.86385214,0.88981803,600,exploratory / descriptive only; no significance test
+0b_random_erasing_best,pooled (non-control),grad_norm_ratio_vs_delta_margin,-0.41266987,-0.76140006,600,exploratory / descriptive only; no significance test
