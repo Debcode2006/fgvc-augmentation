@@ -1,0 +1,9 @@
+context,x,y,method,coefficient,n_points,note
+"transformation-level, checkpoint 'experiment_0a_best'",grad_cosine_mean,val_top1_delta_0b,pearson,-0.23557917,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",grad_cosine_mean,val_top1_delta_0b,spearman,-0.1,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",grad_norm_ratio_mean,val_top1_delta_0b,pearson,-0.53511681,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",grad_norm_ratio_mean,val_top1_delta_0b,spearman,-0.5,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",delta_margin_mean,val_top1_delta_0b,pearson,0.19993833,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",delta_margin_mean,val_top1_delta_0b,spearman,0.2,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",grad_cosine_mean,delta_margin_mean,pearson,0.79205281,5,exploratory / descriptive only; no significance test
+"transformation-level, checkpoint 'experiment_0a_best'",grad_cosine_mean,delta_margin_mean,spearman,0.9,5,exploratory / descriptive only; no significance test
