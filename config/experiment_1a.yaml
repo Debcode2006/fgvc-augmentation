@@ -1,0 +1,448 @@
+# =============================================================================
+# Experiment 1A - Gradient Compatibility Analysis (CUB-200-2011)
+#
+# THIS FILE IS THE SINGLE SOURCE OF TRUTH FOR THE EXPERIMENT.
+#
+# No experiment-defining value may be hard-coded in Python. Every path, seed,
+# checkpoint stage, transformation strength, parameter scope and output name
+# lives here.
+#
+# Experiment 0A showed that transformations produce heterogeneous changes in a
+# FROZEN model's pairwise discriminative margin. Experiment 0B trained under the
+# same transformations and found that the frozen-model damage did NOT predict
+# downstream usefulness (Outcome B, the null).
+#
+# Experiment 1A asks a different question about the same frozen checkpoints:
+#
+#   "At different stages of an already-trained model, do clean and transformed
+#    versions of the same image produce different degrees of gradient alignment
+#    and gradient magnitude, and does this differ systematically across
+#    transformations?"
+#
+# It is a DIAGNOSTIC, not an explanation. It measures a first-order property
+# (the learning signal) where 0A measured a zeroth-order one (the output
+# margin), on the same images, the same transformations and the same split.
+#
+# What it is NOT:
+#   * It is not a claim that gradient alignment determines downstream accuracy.
+#     Both quantities here are instantaneous; 0B's outcome is the endpoint of a
+#     20-epoch trajectory, and five transformation points cannot bridge that.
+#   * It is not a ranking of augmentations. A high cosine means the transformed
+#     sample pushes the update where the clean one already pushed it, which
+#     reads as "redundant" just as easily as "safe".
+#   * It is not DPGA, and nothing measured here selects, weights or filters an
+#     augmentation.
+#   * No model is trained. No checkpoint is modified. No optimizer is built.
+# =============================================================================
+
+experiment:
+  name: experiment_1a
+  description: >-
+    Gradient compatibility analysis: for each frozen checkpoint, each audited
+    transformation and each validation image, compare the parameter gradient of
+    the clean image against that of its transformed counterpart - cosine
+    similarity C_g and norm ratio R_g - alongside the Experiment 0A margin
+    quantities measured on the same image.
+
+# -----------------------------------------------------------------------------
+# Reproducibility
+# -----------------------------------------------------------------------------
+seed:
+  value: 42
+  deterministic_algorithms: false
+  cudnn_deterministic: true
+  cudnn_benchmark: false
+  seed_dataloader_workers: true
+
+# -----------------------------------------------------------------------------
+# Dataset - CUB-200-2011 (official layout, never rearranged)
+# -----------------------------------------------------------------------------
+dataset:
+  name: cub_200_2011
+  root: data/CUB_200_2011
+  images_dir: images
+  metadata:
+    images: images.txt
+    labels: image_class_labels.txt
+    split: train_test_split.txt
+    classes: classes.txt
+  expected:
+    num_images: 11788
+    num_classes: 200
+    num_official_train: 5994
+    num_official_test: 5794
+  validation:
+    check_image_paths: true
+    check_image_readable: false
+    strict_counts: true
+
+# -----------------------------------------------------------------------------
+# Internal train/validation split
+#
+# EXACTLY Experiment 0A's split, by pointing at the same manifest. The official
+# CUB test portion stays locked and is never loaded by any stage of 1A.
+# -----------------------------------------------------------------------------
+split:
+  val_fraction: 0.1
+  stratified: true
+  seed: null
+  path: outputs/experiment_0a/splits/internal_split.json
+  overwrite: false
+
+# -----------------------------------------------------------------------------
+# Model - must match the checkpoints being loaded
+# -----------------------------------------------------------------------------
+model:
+  architecture: resnet18
+  pretrained: true          # only used to reconstruct the `init` stage
+  weights: IMAGENET1K_V1
+  num_classes: 200
+  feature_dim: null
+
+# -----------------------------------------------------------------------------
+# Image preprocessing - identical to Experiments 0A and 0B
+# -----------------------------------------------------------------------------
+preprocess:
+  image_size: 224
+  resize_size: 256
+  interpolation: bilinear
+  normalize:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+
+# -----------------------------------------------------------------------------
+# Loss
+#
+# `train.loss` is reused verbatim so the loss being differentiated is the loss
+# the 0B models were trained with. Nothing else in the `train` section is read:
+# Experiment 1A trains nothing.
+# -----------------------------------------------------------------------------
+train:
+  loss:
+    name: cross_entropy
+    label_smoothing: 0.0
+
+# -----------------------------------------------------------------------------
+# The gradient measurement
+# -----------------------------------------------------------------------------
+gradients:
+  # Which images. `val` is Experiment 0A's population, which is what makes the
+  # two joinable per image. `train` is permitted but warned about: a converged
+  # checkpoint has near-zero loss on its own training images, so clean gradient
+  # norms collapse and the cosine becomes ill-conditioned. The official test set
+  # is locked and is not an option.
+  split_subset: val
+
+  # Images per stage. `null` = the whole validation subset (600).
+  max_images: null
+
+  # Loader settings. Each item decodes one JPEG and produces the clean view plus
+  # every transformed view, so the decode happens once per image, not once per
+  # transformation. The gradient itself is necessarily per-sample.
+  batch_size: 8
+  num_workers: 4
+  pin_memory: true
+  progress: true
+
+  precision:
+    # float32 only. The gradient is the measurement instrument here, exactly as
+    # the probability was in Experiment 0A; autocast is never enabled and all
+    # inner products accumulate in float64.
+    dtype: float32
+    # TF32 truncates matmul/conv mantissas to 10 bits. Disabled so the identity
+    # control arm can reproduce C_g = 1 to float precision and so the 0A margin
+    # reproduction is not hardware-dependent.
+    allow_tf32: false
+
+  sampling:
+    # Transformation parameter seed. `null` inherits seed.value (42), which is
+    # what Experiment 0A used - so realisation 0 reproduces 0A's exact draw.
+    param_seed: null
+    # Independent parameter draws per (image, transformation). Realisation 0 is
+    # always Experiment 0A's frozen draw; realisations >= 1 extend the seed key
+    # and are independent. 1 keeps the run comparable to 0A at minimum cost;
+    # raise it only to ask how much of the spread comes from the draw itself.
+    realisations: 1
+
+  null_control:
+    # Cosine between this image's clean gradient and the previously processed
+    # image's clean gradient, under a seeded permutation of the traversal order.
+    #
+    # This is what makes every other cosine readable. In ~11.2 M dimensions
+    # there is no intuition for whether C_g = 0.2 is high or low; the identity
+    # arm fixes the upper end at 1.0 and this fixes the "unrelated learning
+    # signal" end. It costs zero extra backward passes.
+    enabled: true
+
+  # Named subsets of the trainable parameters, as name -> list of regular
+  # expressions matched against parameter names. Several are measured at once
+  # because the backward pass has already run, so the marginal cost is nil.
+  scopes:
+    full:      ["^backbone\\.", "^classifier\\."]
+    backbone:  ["^backbone\\."]
+    head:      ["^classifier\\."]
+    stem:      ["^backbone\\.(conv1|bn1)\\."]
+    layer1:    ["^backbone\\.layer1\\."]
+    layer2:    ["^backbone\\.layer2\\."]
+    layer3:    ["^backbone\\.layer3\\."]
+    layer4:    ["^backbone\\.layer4\\."]
+
+  # The scope whose cosine and norm ratio are Experiment 1A's PRIMARY metric.
+  # `full` is the whole trainable parameter vector - what the optimizer actually
+  # moves. The others are reported alongside it, never instead of it.
+  primary_scope: full
+
+  # Checkpoint stages. Every one is loaded READ-ONLY; Experiment 1A never writes
+  # into outputs/experiment_0a/ or outputs/experiment_0b/.
+  #
+  # NOTE ON WHAT IS AVAILABLE: the shared trainer persists only `best` and
+  # `last` per run, so no intra-training checkpoint exists anywhere in the
+  # repository. The stages below therefore span untrained -> converged ->
+  # post-peak, and cannot resolve a training trajectory. Producing one requires
+  # per-epoch checkpointing during training, which is Experiment 1B's job.
+  checkpoints:
+    - name: init
+      kind: init
+      description: >-
+        Epoch 0. ImageNet-pretrained backbone with a freshly drawn head,
+        reconstructed under the master seed - the same two-step seeding
+        Experiment 0B performs before training each arm, and verified to rebuild
+        bit-identically. No such checkpoint was ever written to disk.
+
+    - name: experiment_0a_best
+      kind: file
+      path: outputs/experiment_0a/checkpoints/baseline_best.pt
+      policy: null
+      description: >-
+        The exact frozen model Experiment 0A measured delta_margin on (epoch 17
+        of 20, val top-1 76.17%). This is the ANCHOR stage: only here can the
+        gradient measurement be joined to 0A's margins image by image.
+
+    - name: 0b_baseline_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline/best.pt
+      policy: baseline
+      description: >-
+        Experiment 0B's reference arm at its selected epoch (14 of 20, val top-1
+        78.17%) - a converged model trained under the standard recipe.
+
+    - name: 0b_baseline_last
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline/last.pt
+      policy: baseline
+      description: >-
+        Experiment 0B's reference arm at the end of its budget (epoch 20, val
+        top-1 77.17%) - the same lineage, slightly past its best validation
+        point.
+
+    # ---------------------------------------------------------------------
+    # The adaptation probe (Candidate B).
+    #
+    # Each of these measures ONE transformation on the model that was trained
+    # with that transformation, plus the identity control. Comparing a
+    # transformation's C_g here against its C_g on `0b_baseline_best` asks
+    # whether training under a perturbation makes the model's learning signal
+    # more compatible with it.
+    #
+    # CONFOUND, stated plainly: the two models differ in their whole training
+    # trajectory, not only in the transformation. This is a suggestive probe,
+    # not a controlled comparison, and must be reported as such.
+    # ---------------------------------------------------------------------
+    - name: 0b_color_jitter_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline_color_jitter/best.pt
+      policy: baseline_color_jitter
+      transforms: [identity, color_jitter]
+      description: Adaptation probe - colour jitter on the colour-jitter-trained model.
+
+    - name: 0b_rotation_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline_rotation/best.pt
+      policy: baseline_rotation
+      transforms: [identity, rotation]
+      description: Adaptation probe - rotation on the rotation-trained model.
+
+    - name: 0b_crop_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline_crop/best.pt
+      policy: baseline_crop
+      transforms: [identity, random_resized_crop]
+      description: Adaptation probe - crop on the stronger-crop-trained model.
+
+    - name: 0b_gaussian_blur_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline_gaussian_blur/best.pt
+      policy: baseline_gaussian_blur
+      transforms: [identity, gaussian_blur]
+      description: Adaptation probe - blur on the blur-trained model.
+
+    - name: 0b_random_erasing_best
+      kind: file
+      path: outputs/experiment_0b/checkpoints/baseline_random_erasing/best.pt
+      policy: baseline_random_erasing
+      transforms: [identity, random_erasing]
+      description: Adaptation probe - erasing on the erasing-trained model.
+
+  output:
+    dir: outputs/experiment_1a/gradients
+    format: csv
+    records_name: gradient_records
+    clean_name: clean_reference
+    manifest_name: gradient_manifest.json
+    float_precision: 8
+
+# -----------------------------------------------------------------------------
+# Transformations - Experiment 0A's exact seven, unchanged.
+#
+# These MUST stay byte-identical to config/experiment_0a.yaml. Redefining a
+# strength here would silently break the join: a delta_margin earned in 0A would
+# no longer refer to the perturbation 1A differentiates.
+#
+# `identity` is the control arm. It transforms nothing, so g_T == g_x and the
+# measurement must return C_g = 1 and R_g = 1 exactly; the analysis stage fails
+# the run if it does not.
+# -----------------------------------------------------------------------------
+transformations:
+  - name: identity
+    type: identity
+    params: {}
+
+  - name: horizontal_flip
+    type: horizontal_flip
+    params: {}
+
+  - name: color_jitter
+    type: color_jitter
+    params:
+      brightness: 0.4
+      contrast: 0.4
+      saturation: 0.4
+      hue: 0.1
+
+  - name: rotation
+    type: rotation
+    params:
+      degrees: 15.0
+      interpolation: bilinear
+      expand: false
+      fill: 0
+
+  - name: random_resized_crop
+    type: random_resized_crop
+    params:
+      scale: [0.5, 0.9]
+      ratio: [0.75, 1.3333]
+      interpolation: bilinear
+
+  - name: gaussian_blur
+    type: gaussian_blur
+    params:
+      kernel_size: 9
+      sigma: [1.0, 2.0]
+
+  - name: random_erasing
+    type: random_erasing
+    params:
+      scale: [0.05, 0.2]
+      ratio: [0.3, 3.3]
+      value: 0.0
+
+# -----------------------------------------------------------------------------
+# Analysis
+# -----------------------------------------------------------------------------
+analysis:
+  # The stage every cross-experiment join and every single-checkpoint figure is
+  # anchored to. It must be the checkpoint Experiment 0A audited, because that
+  # is the only model for which 0A's per-image delta_margin is defined.
+  anchor_checkpoint: experiment_0a_best
+
+  # The no-op arm. Its C_g and R_g must both be 1.
+  control_transform: identity
+  # Tolerance on |C_g - 1| and |R_g - 1| for the control arm. float64 inner
+  # products over ~11.2 M float32 terms; anything above this means the
+  # measurement path is not deterministic.
+  control_tolerance: 1.0e-6
+
+  quantiles: [0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99]
+
+  bootstrap:
+    # Percentile bootstrap over images for the mean of C_g. Seeded via BLAKE2b
+    # from seed.value, never Python's per-process-salted hash().
+    resamples: 2000
+    confidence: 0.95
+
+  # Experiment 0A's audit dataframe - opened READ-ONLY, for the per-image join.
+  reference_0a_records: outputs/experiment_0a/audit/transformation_audit.csv
+  # Experiment 0B's run table - opened READ-ONLY, for the downstream join.
+  reference_0b_runs: outputs/experiment_0b/logs/train_runs.csv
+  reference_0b_baseline: baseline
+
+  join_0a:
+    enabled: true
+    output_name: joined_1a_0a_per_sample
+    # Realisation 0 at the anchor stage applies 0A's exact draw to 0A's exact
+    # image at 0A's exact checkpoint, so delta_margin must reproduce 0A's.
+    #
+    # It does not reproduce it bit-for-bit, and cannot: 0A ran batched fp32
+    # inference under the cuDNN TF32 default of its day, while 1A runs
+    # per-sample with TF32 off. Measured on this hardware, the discrepancy is
+    # max 2.5e-3 / mean 2.6e-4, it moves when TF32 or the batch size is changed,
+    # and the frozen hardest competitor agrees on every row - so it is the
+    # residual GPU non-determinism documented in docs/experiment_0a.md §30, not
+    # a different perturbation. It sits three orders of magnitude below the
+    # effect sizes 0A reports (mean dM 0.007-0.211).
+    #
+    # The threshold is set just above the measured worst case: a genuine
+    # pipeline divergence would be far larger, and would also show up as
+    # competitor disagreements.
+    tolerance: 5.0e-3
+
+  join_0b:
+    enabled: true
+    output_name: joined_1a_0b_summary
+
+  association:
+    methods: [pearson, spearman]
+    output_name: association_exploratory
+
+  output:
+    dir: outputs/experiment_1a/analysis
+    format: csv
+    summary_name: gradient_summary
+    null_name: null_control_summary
+    relationships_name: relationship_summary
+
+  plots:
+    # Any subset of: grad_cosine_distribution, grad_norm_ratio_distribution,
+    # grad_cosine_vs_delta_margin, grad_cosine_vs_feature_cosine,
+    # grad_cosine_by_checkpoint, grad_norm_ratio_by_checkpoint,
+    # grad_cosine_vs_downstream, scope_heatmap.
+    kinds:
+      - grad_cosine_distribution
+      - grad_norm_ratio_distribution
+      - grad_cosine_vs_delta_margin
+      - grad_cosine_vs_feature_cosine
+      - grad_cosine_by_checkpoint
+      - grad_norm_ratio_by_checkpoint
+      - grad_cosine_vs_downstream
+      - scope_heatmap
+    dpi: 200
+    figsize: [12, 6]
+    file_format: png
+    dir: outputs/experiment_1a/analysis/plots
+
+# -----------------------------------------------------------------------------
+# Runtime
+# -----------------------------------------------------------------------------
+runtime:
+  device: auto
+  require_device: false
+
+logging:
+  level: INFO
+  dir: outputs/experiment_1a/logs
+  file_template: "{stage}.log"
+  to_file: true
+  to_console: true
+  format: "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
